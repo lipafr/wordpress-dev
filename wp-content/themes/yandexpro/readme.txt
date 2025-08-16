@@ -1,6 +1,7 @@
-=== YandexPRO Blog ===
+=== YandexPro Enhanced ===
 
-Contributors: YandexPRO Team
+Contributors: YandexPro Team
+Tags: blog, business, custom-menu, custom-logo, editor-style, featured-images, flexible-header, full-site-editing, rtl-language-support, sticky-post, theme-options, threaded-comments, translation-ready, wide-blocks
 Requires at least: 6.0
 Tested up to: 6.4
 Requires PHP: 8.0
@@ -8,87 +9,395 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-== Description ==
+Профессиональная WordPress тема для блогов и бизнес-сайтов с поддержкой Gutenberg, мобильной адаптивности и полной настройкой через Customizer.
 
-YandexPRO Blog is a modern WordPress theme designed specifically for blogs about internet marketing and Yandex Direct. It features a clean, professional design with excellent readability, mobile responsiveness, and SEO optimization.
+== Описание ==
 
-== Features ==
+YandexPro Enhanced - это современная, быстрая и полностью адаптивная WordPress тема, созданная специально для блогов о маркетинге, контекстной рекламе и IT-тематике. Тема идеально подходит для блогеров, маркетологов, агентств и всех, кто хочет создать профессиональный сайт с отличной функциональностью.
 
-* Responsive design that works on all devices
-* Gutenberg editor support with custom block styles
-* Multiple page templates (Landing, Blog, Contact)
-* Customizer options for colors, fonts, and layout
-* SEO-optimized with schema markup
-* Accessibility ready (WCAG 2.1 compliant)
-* Translation ready
-* Custom widgets and navigation menus
-* Social sharing functionality
-* Newsletter subscription integration
-* Reading time calculation
-* Post views tracking
-* Related posts system
-* Table of contents for long articles
+= Основные возможности =
 
-== Installation ==
+* **Полная поддержка Gutenberg** - все блоки работают корректно
+* **Мобильная адаптивность** - идеально выглядит на всех устройствах
+* **Высокая производительность** - оптимизированный код и быстрая загрузка
+* **SEO-оптимизация** - структурированные данные и семантическая разметка
+* **Доступность (WCAG 2.1)** - полная поддержка людей с ограниченными возможностями
+* **Темная тема** - переключатель светлой/темной темы
+* **Настройка через Customizer** - более 50 опций настройки без кода
+* **Готовые шаблоны страниц** - лендинг, блог, контакты
+* **Социальные сети** - интеграция с популярными платформами
+* **Мультиязычность** - готовность к переводу
 
-1. Download the theme ZIP file
-2. Go to Appearance → Themes in your WordPress admin
-3. Click "Add New" then "Upload Theme"
-4. Choose the ZIP file and click "Install Now"
-5. Activate the theme
+= Шаблоны страниц =
 
-== Setup ==
+* **Лендинг** - полноширинная страница без сайдбара
+* **Блог** - специальная страница для ленты записей
+* **Контакты** - страница с формой обратной связи
 
-1. Go to Appearance → Customize to configure:
-   - Colors (primary and secondary)
-   - Typography (font family)
-   - Layout options
-   - Logo and site identity
+= Поддерживаемые блоки Gutenberg =
 
-2. Set up menus:
-   - Go to Appearance → Menus
-   - Create a "Primary Menu" and assign it to "Primary Menu" location
-   - Optionally create a footer menu
+* Все стандартные блоки WordPress
+* Широкие и полноширинные блоки
+* Блоки с выравниванием
+* Кастомные цвета и шрифты
+* Готовые паттерны блоков
 
-3. Configure homepage:
-   - Go to Settings → Reading
-   - Set "Your homepage displays" to "A static page"
-   - Choose or create pages for homepage and blog
+= Настройки темы =
 
-4. Import starter content:
-   - The theme includes starter content that will be imported automatically
-   - Or manually create pages using the included page templates
+**Цвета и схемы:**
+* 5 готовых цветовых схем
+* Настройка основного и акцентного цветов
+* Переключатель темной темы
 
-== Page Templates ==
+**Типографика:**
+* Системные шрифты по умолчанию
+* Поддержка Google Fonts
+* 3 размера шрифтов
 
-* Landing Page - Full-width template for landing pages
-* Blog Page - Template for displaying blog posts
-* Contact Page - Contact form with business information
+**Макет:**
+* Настройка ширины контейнера
+* Включение/отключение сайдбара
+* Различные стили шапки
 
-== Customization ==
+**Социальные сети:**
+* Поддержка ВКонтакте, Telegram, YouTube, Twitter, Facebook, Instagram, LinkedIn
 
-The theme can be customized through the WordPress Customizer without code:
+== Установка ==
 
-* Colors: Primary and secondary color schemes
-* Typography: Choose from system fonts or Google Fonts
-* Layout: Container width and blog layout options
-* Header: Logo, site title, and navigation
-* Footer: Widgets and footer menu
+= Автоматическая установка =
 
-For developers: The theme follows WordPress coding standards and is child-theme ready.
+1. Войдите в админ-панель WordPress
+2. Перейдите в "Внешний вид" → "Темы"
+3. Нажмите "Добавить новую"
+4. Нажмите "Загрузить тему"
+5. Выберите ZIP-файл темы и нажмите "Установить"
+6. Активируйте тему
 
-== Child Theme ==
+= Ручная установка =
 
-To create a child theme:
+1. Скачайте ZIP-файл темы
+2. Разархивируйте его в папку /wp-content/themes/
+3. Войдите в админ-панель WordPress
+4. Перейдите в "Внешний вид" → "Темы"
+5. Найдите "YandexPro Enhanced" и активируйте
 
-1. Create a new folder in /wp-content/themes/ named "yandexpro-blog-child"
-2. Create style.css with the following header:
+== Быстрый старт ==
+
+После активации темы:
+
+1. **Настройте меню:**
+   - Перейдите в "Внешний вид" → "Меню"
+   - Создайте меню и назначьте его как "Основное меню"
+
+2. **Установите логотип:**
+   - Перейдите в "Внешний вид" → "Настроить" → "Идентичность сайта"
+   - Загрузите логотип
+
+3. **Настройте главную страницу:**
+   - "Настройки" → "Чтение" → "Статическая страница"
+   - Выберите страницу для главной
+
+4. **Настройте тему:**
+   - "Внешний вид" → "Настроить" → "Настройки темы YandexPro"
+   - Выберите цветовую схему, настройте типографику и макет
+
+5. **Добавьте виджеты:**
+   - "Внешний вид" → "Виджеты"
+   - Добавьте виджеты в "Основной сайдбар"
+
+== Настройка ==
+
+= Настройки темы в Customizer =
+
+**Цветовая схема:**
+* Выбор готовой схемы (синяя, зеленая, фиолетовая, оранжевая, красная)
+* Настройка основного цвета
+* Настройка акцентного цвета
+* Включение переключателя темной темы
+
+**Типографика:**
+* Включение Google Fonts
+* Выбор основного шрифта
+* Размер шрифта (маленький, средний, большой)
+
+**Макет:**
+* Ширина контейнера (960-1600px)
+* Показ сайдбара
+* Стиль шапки (по умолчанию, минималистичный, по центру)
+
+**Настройки шапки:**
+* Показ поиска в шапке
+* Закрепленная шапка
+* Показ логотипа
+
+**Главная секция (Hero):**
+* Заголовок Hero секции
+* Описание Hero секции
+* Текст кнопки
+* Ссылка кнопки
+
+**Настройки подвала:**
+* Пользовательский текст в подвале
+* Показ ссылки на тему
+* Кнопка "Наверх"
+
+**Социальные сети:**
+* Включение социальных ссылок
+* Ссылки на ВКонтакте, Telegram, YouTube, Twitter, Facebook, Instagram, LinkedIn
+
+**Настройки блога:**
+* Показ хлебных крошек
+* Длина анонса (10-100 слов)
+
+= Шаблоны страниц =
+
+Для применения специального шаблона:
+
+1. Создайте или отредактируйте страницу
+2. В блоке "Атрибуты страницы" выберите нужный шаблон:
+   - **Лендинг** - для главной страницы или посадочных страниц
+   - **Страница блога** - для отображения списка записей
+   - **Страница контактов** - с формой обратной связи
+
+= Меню =
+
+Тема поддерживает два местоположения меню:
+
+* **Основное меню** - в шапке сайта
+* **Меню в подвале** - в подвале (горизонтальное)
+
+Для создания меню:
+1. "Внешний вид" → "Меню"
+2. Создайте новое меню
+3. Добавьте пункты меню
+4. Назначьте местоположение
+
+= Виджеты =
+
+Доступны области виджетов:
+
+* **Основной сайдбар** - боковая панель на страницах блога
+* **Область виджетов в футере** - виджеты в подвале
+
+Рекомендуемые виджеты:
+* Поиск
+* Последние записи
+* Рубрики
+* Облако тегов
+* Архивы
+
+== Gutenberg и блоки ==
+
+= Поддерживаемые блоки =
+
+Тема полностью поддерживает все стандартные блоки WordPress:
+
+* Текстовые блоки (параграф, заголовки, список)
+* Медиа блоки (изображение, видео, аудио, галерея)
+* Блоки дизайна (кнопка, разделитель, спейсер)
+* Блоки макета (группа, колонки, медиа и текст)
+* Блоки виджетов (последние записи, рубрики, архивы)
+
+= Выравнивание блоков =
+
+* **Обычная ширина** - стандартная ширина контента
+* **Широкая ширина** - увеличенная ширина
+* **Полная ширина** - на всю ширину экрана
+
+= Паттерны блоков =
+
+Встроенные паттерны:
+
+* **Hero секция** - заголовок, описание и кнопка
+* **Особенности** - сетка с преимуществами
+* **Призыв к действию** - призыв с кнопкой
+
+== SEO и производительность ==
+
+= SEO-оптимизация =
+
+* Семантическая HTML5 разметка
+* Структурированные данные (Schema.org)
+* Правильная иерархия заголовков
+* Open Graph и Twitter Card мета-теги
+* Хлебные крошки
+
+= Оптимизация производительности =
+
+* Lazy loading изображений
+* Оптимизация CSS и JavaScript
+* Минимальные HTTP-запросы
+* Поддержка кеширования
+* Оптимизированные изображения
+
+= Доступность =
+
+* Семантические landmark роли
+* Skip-ссылки
+* Поддержка навигации с клавиатуры
+* Правильные ARIA-атрибуты
+* Высокий контраст текста
+
+== Мультиязычность ==
+
+Тема готова к переводу и поддерживает:
+
+* **Text Domain:** yandexpro
+* **Языковые файлы:** /languages/
+* **POT файл:** включен для создания переводов
+
+Переводы можно создавать с помощью:
+* Poedit
+* Loco Translate (плагин)
+* WPML
+* Polylang
+
+== Дочерние темы ==
+
+Для безопасной кастомизации рекомендуется использовать дочернюю тему:
+
+1. Создайте папку в /wp-content/themes/ (например: yandexpro-child)
+2. Создайте файл style.css:
 
 ```css
 /*
-Theme Name: YandexPRO Blog Child
-Template: yandexpro-blog
-Version: 1.0.0
+Theme Name: YandexPro Enhanced Child
+Template: yandexpro-enhanced
 */
 
-@import url("../yandexpro-blog/style.css");
+@import url("../yandexpro-enhanced/style.css");
+
+/* Ваши стили здесь */
+```
+
+3. Создайте файл functions.php:
+
+```php
+<?php
+function yandexpro_child_enqueue_styles() {
+    wp_enqueue_style('parent-style', get_template_directory_uri() . '/style.css');
+}
+add_action('wp_enqueue_scripts', 'yandexpro_child_enqueue_styles');
+?>
+```
+
+4. Активируйте дочернюю тему
+
+== Обновления ==
+
+= Безопасное обновление =
+
+1. **Создайте резервную копию** сайта
+2. **Используйте дочернюю тему** для кастомизации
+3. **Сохраните настройки** Customizer (экспорт)
+4. Обновите тему через админ-панель
+5. Проверьте настройки
+
+= Перенос настроек =
+
+При обновлении все настройки Customizer сохраняются автоматически. Но рекомендуется:
+
+1. Экспортировать настройки: "Настроить" → "Экспорт/Импорт"
+2. Сохранить файл настроек
+3. При необходимости импортировать после обновления
+
+== Troubleshooting ==
+
+= Частые вопросы =
+
+**Q: Как изменить цвета темы?**
+A: Перейдите в "Внешний вид" → "Настроить" → "Настройки темы YandexPro" → "Цветовая схема"
+
+**Q: Как включить темную тему?**
+A: В настройках цветовой схемы включите "Переключатель темной темы"
+
+**Q: Сайдбар не отображается**
+A: Проверьте настройки: "Настроить" → "Настройки темы YandexPro" → "Макет" → "Показывать сайдбар"
+
+**Q: Как изменить ширину сайта?**
+A: "Настроить" → "Настройки темы YandexPro" → "Макет" → "Ширина контейнера"
+
+**Q: Логотип слишком большой**
+A: Рекомендуемый размер логотипа: 250x250px. Настройте в "Настроить" → "Идентичность сайта"
+
+= Совместимость с плагинами =
+
+Тема протестирована с популярными плагинами:
+
+* **WooCommerce** - базовая поддержка
+* **Yoast SEO** - полная совместимость
+* **Contact Form 7** - стилизация форм
+* **WPML/Polylang** - мультиязычность
+* **Jetpack** - поддержка функций
+
+= Системные требования =
+
+* **WordPress:** 6.0+
+* **PHP:** 8.0+
+* **MySQL:** 5.6+
+* **Память:** минимум 128MB
+
+== Поддержка ==
+
+= Документация =
+
+Полная документация доступна на нашем сайте:
+https://example.com/yandexpro-docs
+
+= Сообщество =
+
+* **Форум поддержки:** https://example.com/support
+* **Telegram чат:** https://t.me/yandexpro
+* **GitHub:** https://github.com/yandexpro/theme
+
+= Обратная связь =
+
+Для вопросов и предложений:
+* Email: support@yandexpro.com
+* Форма обратной связи на сайте
+
+== Changelog ==
+
+= 1.0.0 - 2025-01-XX =
+* Первый релиз
+* Полная поддержка Gutenberg
+* Мобильная адаптивность
+* 50+ настроек Customizer
+* 3 шаблона страниц
+* SEO-оптимизация
+* Доступность (WCAG 2.1)
+* Поддержка темной темы
+* Готовые блок-паттерны
+* Мультиязычность
+
+== Upgrade Notice ==
+
+= 1.0.0 =
+Первая версия темы YandexPro Enhanced. Рекомендуется создать резервную копию перед установкой.
+
+== Credits ==
+
+* **Разработка:** YandexPro Team
+* **Иконки:** Heroicons (https://heroicons.com)
+* **Шрифты:** System fonts, Google Fonts
+* **Тестирование:** WordPress Theme Review Team guidelines
+
+== License ==
+
+YandexPro Enhanced WordPress Theme, Copyright 2025 YandexPro Team
+YandexPro Enhanced is distributed under the terms of the GNU GPL
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+== Third Party Resources ==
+
+* Normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css
+* Screenshot images from Unsplash.com | CC0 License

@@ -1,16 +1,592 @@
-/*!
-Theme Name: YandexPRO Blog
-Description: Современная WordPress тема для блога о интернет-маркетинге и Яндекс Директ. Адаптивный дизайн, поддержка Gutenberg, SEO-оптимизация.
-Author: YandexPRO Team
+/*
+Theme Name: YandexPro Enhanced
+Theme URI: https://example.com/yandexpro-theme
+Description: Профессиональная WordPress тема для блогов и бизнес-сайтов с поддержкой Gutenberg, мобильной адаптивности и полной настройкой через Customizer. Идеально подходит для блогов о маркетинге, контекстной рекламе и IT-тематике.
+Author: YandexPro Team
 Version: 1.0.0
 Requires at least: 6.0
 Tested up to: 6.4
 Requires PHP: 8.0
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Text Domain: yandexpro-blog
+Text Domain: yandexpro
 Domain Path: /languages
-Tags: blog, two-columns, custom-header, custom-menu, custom-logo, editor-style, featured-images, footer-widgets, sticky-post, theme-options, threaded-comments, translation-ready, block-styles, wide-blocks
+Tags: blog, business, custom-menu, custom-logo, editor-style, featured-images, flexible-header, full-site-editing, rtl-language-support, sticky-post, theme-options, threaded-comments, translation-ready, wide-blocks
 */
 
-/* Основные стили загружаются из assets/css/main.css */
+/* ==========================================================================
+   CSS Variables and Custom Properties
+   ========================================================================== */
+
+:root {
+    /* Colors */
+    --yandexpro-primary: #2c3e50;
+    --yandexpro-secondary: #7f8c8d;
+    --yandexpro-accent: #3498db;
+    --yandexpro-success: #27ae60;
+    --yandexpro-warning: #f39c12;
+    --yandexpro-danger: #e74c3c;
+    --yandexpro-light: #ecf0f1;
+    --yandexpro-dark: #34495e;
+    --yandexpro-white: #ffffff;
+    --yandexpro-black: #2c3e50;
+
+    /* Typography */
+    --yandexpro-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+    --yandexpro-font-size-base: 1rem;
+    --yandexpro-font-size-small: 0.875rem;
+    --yandexpro-font-size-large: 1.125rem;
+    --yandexpro-line-height-base: 1.6;
+    --yandexpro-line-height-heading: 1.3;
+
+    /* Spacing */
+    --yandexpro-spacing-xs: 0.25rem;
+    --yandexpro-spacing-sm: 0.5rem;
+    --yandexpro-spacing-md: 1rem;
+    --yandexpro-spacing-lg: 1.5rem;
+    --yandexpro-spacing-xl: 2rem;
+    --yandexpro-spacing-xxl: 3rem;
+
+    /* Layout */
+    --yandexpro-container-width: 1200px;
+    --yandexpro-container-wide: 1400px;
+    --yandexpro-border-radius: 6px;
+    --yandexpro-border-radius-small: 4px;
+    --yandexpro-border-radius-large: 8px;
+
+    /* Shadows */
+    --yandexpro-shadow-light: 0 2px 4px rgba(0,0,0,0.1);
+    --yandexpro-shadow-medium: 0 4px 6px rgba(0,0,0,0.1);
+    --yandexpro-shadow-heavy: 0 8px 24px rgba(0,0,0,0.15);
+
+    /* Transitions */
+    --yandexpro-transition: all 0.3s ease;
+    --yandexpro-transition-fast: all 0.15s ease;
+}
+
+/* Dark theme variables */
+[data-theme="dark"] {
+    --yandexpro-primary: #ecf0f1;
+    --yandexpro-secondary: #bdc3c7;
+    --yandexpro-light: #34495e;
+    --yandexpro-white: #2c3e50;
+    --yandexpro-black: #ecf0f1;
+}
+
+/* ==========================================================================
+   Reset and Normalize
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    line-height: var(--yandexpro-line-height-base);
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: var(--yandexpro-font-family);
+    font-size: var(--yandexpro-font-size-base);
+    line-height: var(--yandexpro-line-height-base);
+    color: var(--yandexpro-black);
+    background-color: var(--yandexpro-white);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Remove default margins and paddings */
+h1, h2, h3, h4, h5, h6,
+p, blockquote, pre,
+dl, dd, ol, ul,
+figure, hr,
+fieldset, legend {
+    margin: 0;
+    padding: 0;
+}
+
+/* Remove list styles on ul, ol elements with a list role */
+ul[role='list'],
+ol[role='list'] {
+    list-style: none;
+}
+
+/* Set core root defaults */
+html:focus-within {
+    scroll-behavior: smooth;
+}
+
+/* Set core body defaults */
+body {
+    min-height: 100vh;
+    text-rendering: optimizeSpeed;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+    text-decoration-skip-ink: auto;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+/* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+    html:focus-within {
+        scroll-behavior: auto;
+    }
+    
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: var(--yandexpro-spacing-md);
+    font-weight: 600;
+    line-height: var(--yandexpro-line-height-heading);
+    color: var(--yandexpro-primary);
+}
+
+h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); }
+h2 { font-size: clamp(1.5rem, 3.5vw, 2rem); }
+h3 { font-size: clamp(1.25rem, 3vw, 1.75rem); }
+h4 { font-size: clamp(1.125rem, 2.5vw, 1.5rem); }
+h5 { font-size: clamp(1rem, 2vw, 1.25rem); }
+h6 { font-size: clamp(0.875rem, 1.5vw, 1rem); }
+
+p {
+    margin-bottom: var(--yandexpro-spacing-md);
+}
+
+a {
+    color: var(--yandexpro-accent);
+    text-decoration: none;
+    transition: var(--yandexpro-transition-fast);
+}
+
+a:hover,
+a:focus {
+    color: var(--yandexpro-primary);
+    text-decoration: underline;
+}
+
+/* Focus styles for accessibility */
+a:focus,
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+    outline: 2px solid var(--yandexpro-accent);
+    outline-offset: 2px;
+}
+
+strong, b {
+    font-weight: 600;
+}
+
+em, i {
+    font-style: italic;
+}
+
+small {
+    font-size: var(--yandexpro-font-size-small);
+}
+
+blockquote {
+    border-left: 4px solid var(--yandexpro-accent);
+    padding-left: var(--yandexpro-spacing-lg);
+    margin: var(--yandexpro-spacing-xl) 0;
+    font-style: italic;
+    font-size: var(--yandexpro-font-size-large);
+    color: var(--yandexpro-secondary);
+}
+
+code, pre {
+    font-family: Monaco, Consolas, 'Andale Mono', 'DejaVu Sans Mono', monospace;
+    font-size: 0.9em;
+}
+
+code {
+    background: var(--yandexpro-light);
+    padding: 0.1em 0.3em;
+    border-radius: var(--yandexpro-border-radius-small);
+}
+
+pre {
+    background: var(--yandexpro-light);
+    padding: var(--yandexpro-spacing-md);
+    border-radius: var(--yandexpro-border-radius);
+    overflow-x: auto;
+    margin: var(--yandexpro-spacing-lg) 0;
+}
+
+pre code {
+    background: none;
+    padding: 0;
+}
+
+/* ==========================================================================
+   Layout Components
+   ========================================================================== */
+
+.container {
+    max-width: var(--yandexpro-container-width);
+    margin: 0 auto;
+    padding: 0 var(--yandexpro-spacing-md);
+}
+
+.container-wide {
+    max-width: var(--yandexpro-container-wide);
+    margin: 0 auto;
+    padding: 0 var(--yandexpro-spacing-md);
+}
+
+.site-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.site-main {
+    flex: 1;
+}
+
+.content-wrapper {
+    padding: var(--yandexpro-spacing-xl) 0;
+}
+
+/* Skip link for accessibility */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: var(--yandexpro-spacing-md);
+    z-index: 999999;
+    padding: var(--yandexpro-spacing-sm) var(--yandexpro-spacing-md);
+    background: var(--yandexpro-primary);
+    color: var(--yandexpro-white);
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: var(--yandexpro-border-radius);
+}
+
+.skip-link:focus {
+    left: var(--yandexpro-spacing-md);
+}
+
+/* Screen reader text */
+.screen-reader-text {
+    border: 0;
+    clip: rect(1px, 1px, 1px, 1px);
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute !important;
+    width: 1px;
+    word-wrap: normal !important;
+}
+
+.screen-reader-text:focus {
+    background-color: var(--yandexpro-light);
+    border-radius: var(--yandexpro-border-radius-small);
+    box-shadow: var(--yandexpro-shadow-medium);
+    clip: auto !important;
+    clip-path: none;
+    color: var(--yandexpro-primary);
+    display: block;
+    font-size: var(--yandexpro-font-size-small);
+    font-weight: 600;
+    height: auto;
+    left: 5px;
+    line-height: normal;
+    padding: 15px 23px 14px;
+    text-decoration: none;
+    top: 5px;
+    width: auto;
+    z-index: 100000;
+}
+
+/* ==========================================================================
+   Button Styles
+   ========================================================================== */
+
+.btn,
+.wp-block-button__link,
+input[type="submit"],
+button[type="submit"] {
+    display: inline-block;
+    padding: var(--yandexpro-spacing-sm) var(--yandexpro-spacing-lg);
+    background: var(--yandexpro-accent);
+    color: var(--yandexpro-white);
+    border: 2px solid var(--yandexpro-accent);
+    border-radius: var(--yandexpro-border-radius);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: var(--yandexpro-font-size-base);
+    line-height: 1.4;
+    cursor: pointer;
+    transition: var(--yandexpro-transition);
+    text-align: center;
+}
+
+.btn:hover,
+.wp-block-button__link:hover,
+input[type="submit"]:hover,
+button[type="submit"]:hover {
+    background: var(--yandexpro-primary);
+    border-color: var(--yandexpro-primary);
+    color: var(--yandexpro-white);
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: var(--yandexpro-shadow-medium);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--yandexpro-accent);
+    border-color: var(--yandexpro-accent);
+}
+
+.btn-secondary:hover {
+    background: var(--yandexpro-accent);
+    color: var(--yandexpro-white);
+}
+
+/* ==========================================================================
+   Form Styles
+   ========================================================================== */
+
+form {
+    margin: var(--yandexpro-spacing-lg) 0;
+}
+
+label {
+    display: block;
+    margin-bottom: var(--yandexpro-spacing-xs);
+    font-weight: 600;
+    color: var(--yandexpro-primary);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+input[type="range"],
+input[type="date"],
+input[type="month"],
+input[type="week"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="color"],
+textarea,
+select {
+    width: 100%;
+    padding: var(--yandexpro-spacing-sm);
+    border: 2px solid var(--yandexpro-light);
+    border-radius: var(--yandexpro-border-radius);
+    font-family: inherit;
+    font-size: var(--yandexpro-font-size-base);
+    background: var(--yandexpro-white);
+    color: var(--yandexpro-black);
+    transition: var(--yandexpro-transition-fast);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--yandexpro-accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-group {
+    margin-bottom: var(--yandexpro-spacing-lg);
+}
+
+/* ==========================================================================
+   Utility Classes
+   ========================================================================== */
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: var(--yandexpro-spacing-xs); }
+.mb-2 { margin-bottom: var(--yandexpro-spacing-sm); }
+.mb-3 { margin-bottom: var(--yandexpro-spacing-md); }
+.mb-4 { margin-bottom: var(--yandexpro-spacing-lg); }
+.mb-5 { margin-bottom: var(--yandexpro-spacing-xl); }
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: var(--yandexpro-spacing-xs); }
+.mt-2 { margin-top: var(--yandexpro-spacing-sm); }
+.mt-3 { margin-top: var(--yandexpro-spacing-md); }
+.mt-4 { margin-top: var(--yandexpro-spacing-lg); }
+.mt-5 { margin-top: var(--yandexpro-spacing-xl); }
+
+.hidden { display: none; }
+.visually-hidden { @extend .screen-reader-text; }
+
+.text-primary { color: var(--yandexpro-primary); }
+.text-secondary { color: var(--yandexpro-secondary); }
+.text-accent { color: var(--yandexpro-accent); }
+
+.bg-light { background-color: var(--yandexpro-light); }
+.bg-primary { background-color: var(--yandexpro-primary); }
+.bg-accent { background-color: var(--yandexpro-accent); }
+
+/* ==========================================================================
+   Responsive Design Breakpoints
+   ========================================================================== */
+
+/* Mobile-first responsive breakpoints */
+
+/* Small devices (phones, up to 480px) */
+@media screen and (max-width: 480px) {
+    :root {
+        --yandexpro-spacing-xs: 0.2rem;
+        --yandexpro-spacing-sm: 0.4rem;
+        --yandexpro-spacing-md: 0.8rem;
+        --yandexpro-spacing-lg: 1.2rem;
+        --yandexpro-spacing-xl: 1.6rem;
+        --yandexpro-spacing-xxl: 2.4rem;
+    }
+    
+    .container,
+    .container-wide {
+        padding: 0 var(--yandexpro-spacing-sm);
+    }
+    
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.25rem; }
+}
+
+/* Medium devices (tablets, 481px to 1024px) */
+@media screen and (min-width: 481px) and (max-width: 1024px) {
+    .container,
+    .container-wide {
+        padding: 0 var(--yandexpro-spacing-lg);
+    }
+}
+
+/* Large devices (desktops, 1025px and up) */
+@media screen and (min-width: 1025px) {
+    .content-wrapper {
+        padding: var(--yandexpro-spacing-xxl) 0;
+    }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+    * {
+        background: transparent !important;
+        color: black !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+    
+    body {
+        font-size: 12pt;
+        line-height: 1.5;
+    }
+    
+    .container {
+        max-width: none;
+        padding: 0;
+    }
+    
+    a {
+        text-decoration: underline;
+    }
+    
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+    
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+    
+    .site-header,
+    .site-footer,
+    .sidebar,
+    .menu-toggle,
+    .main-navigation,
+    .skip-link {
+        display: none;
+    }
+    
+    h1, h2, h3 {
+        page-break-after: avoid;
+    }
+    
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+    
+    thead {
+        display: table-header-group;
+    }
+    
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+    
+    img {
+        max-width: 100% !important;
+    }
+    
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+}

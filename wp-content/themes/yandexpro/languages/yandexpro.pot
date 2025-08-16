@@ -1,0 +1,1461 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the YandexPro Enhanced package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: YandexPro Enhanced 1.0.0\n"
+"Report-Msgid-Bugs-To: support@yandexpro.com\n"
+"POT-Creation-Date: 2025-01-17 12:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: functions.php:95
+msgid "Primary Menu"
+msgstr ""
+
+#: functions.php:96
+msgid "Footer Menu"
+msgstr ""
+
+#: functions.php:142
+msgid "Primary Sidebar"
+msgstr ""
+
+#: functions.php:143
+msgid "Add widgets here to appear in your primary sidebar."
+msgstr ""
+
+#: functions.php:150
+msgid "Footer Widget Area"
+msgstr ""
+
+#: functions.php:151
+msgid "Add widgets here to appear in your footer."
+msgstr ""
+
+#: functions.php:306
+msgid "About Us"
+msgstr ""
+
+#: functions.php:307
+msgid "Welcome to our blog about Yandex.Direct and internet marketing."
+msgstr ""
+
+#: functions.php:310
+msgid "Contacts"
+msgstr ""
+
+#: functions.php:311
+msgid "Contact us for consultation."
+msgstr ""
+
+#: functions.php:314
+msgid "Blog"
+msgstr ""
+
+#: functions.php:315
+msgid "Latest articles about contextual advertising and marketing."
+msgstr ""
+
+#: functions.php:320
+msgid "Primary Menu"
+msgstr ""
+
+#: functions.php:423
+msgid "Continue reading"
+msgstr ""
+
+#: header.php:29
+msgid "Skip to content"
+msgstr ""
+
+#: header.php:76
+msgid "Primary Menu"
+msgstr ""
+
+#: header.php:92
+msgid "Menu"
+msgstr ""
+
+#: header.php:110
+msgid "Toggle navigation"
+msgstr ""
+
+#: header.php:111
+msgid "Close navigation"
+msgstr ""
+
+#: header.php:125
+msgid "Search"
+msgstr ""
+
+#: header.php:140
+msgid "Toggle theme"
+msgstr ""
+
+#: header.php:188
+msgid "Home"
+msgstr ""
+
+#: header.php:193
+msgid "Blog"
+msgstr ""
+
+#: footer.php:46
+msgid "All rights reserved."
+msgstr ""
+
+#: footer.php:52
+msgid "Theme %1$s by %2$s"
+msgstr ""
+
+#: footer.php:62
+msgid "Footer menu"
+msgstr ""
+
+#: footer.php:82
+msgid "Our %s"
+msgstr ""
+
+#: footer.php:109
+msgid "Back to top"
+msgstr ""
+
+#: index.php:31
+msgid "Latest Articles"
+msgstr ""
+
+#: index.php:36
+msgid "Read blog"
+msgstr ""
+
+#: index.php:45
+msgid "Latest articles"
+msgstr ""
+
+#: index.php:78
+msgid "Published %s"
+msgstr ""
+
+#: index.php:87
+msgid "Author: %s"
+msgstr ""
+
+#: index.php:95
+msgid "Reading time: %s min"
+msgstr ""
+
+#: index.php:104
+msgid "Categories: "
+msgstr ""
+
+#: index.php:126
+msgid "Read more"
+msgstr ""
+
+#: index.php:135
+msgid "← Previous posts"
+msgstr ""
+
+#: index.php:136
+msgid "Next posts →"
+msgstr ""
+
+#: index.php:145
+msgid "Nothing found"
+msgstr ""
+
+#: index.php:153
+msgid "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr ""
+
+#: index.php:166
+msgid "Sorry, but nothing matched your search terms. Please try again with some different keywords."
+msgstr ""
+
+#: index.php:170
+msgid "It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help."
+msgstr ""
+
+#: single.php:37
+msgid "Published %s"
+msgstr ""
+
+#: single.php:45
+msgid "Author: %s"
+msgstr ""
+
+#: single.php:52
+msgid "Reading time: %s min"
+msgstr ""
+
+#: single.php:59
+msgid "Categories: "
+msgstr ""
+
+#: single.php:79
+msgid "Continue reading"
+msgstr ""
+
+#: single.php:91
+msgid "Pages:"
+msgstr ""
+
+#: single.php:103
+msgid "Tags:"
+msgstr ""
+
+#: single.php:118
+msgid "Share:"
+msgstr ""
+
+#: single.php:142
+msgid "Edit"
+msgstr ""
+
+#: single.php:152
+msgid "About author: %s"
+msgstr ""
+
+#: single.php:162
+msgid "All posts by %s"
+msgstr ""
+
+#: single.php:167
+msgid "Author's website"
+msgstr ""
+
+#: single.php:177
+msgid "Related articles"
+msgstr ""
+
+#: single.php:207
+msgid "Post navigation"
+msgstr ""
+
+#: single.php:208
+msgid "Post navigation"
+msgstr ""
+
+#: single.php:216
+msgid "Previous post:"
+msgstr ""
+
+#: single.php:223
+msgid "Next post:"
+msgstr ""
+
+#: single.php:252
+msgid "1 min"
+msgstr ""
+
+#: single.php:254
+msgid "%s min"
+msgstr ""
+
+#: single.php:297
+msgid "Share on VKontakte"
+msgstr ""
+
+#: single.php:304
+msgid "Share on Telegram"
+msgstr ""
+
+#: single.php:311
+msgid "Share on Twitter"
+msgstr ""
+
+#: single.php:318
+msgid "Share on Facebook"
+msgstr ""
+
+#: page.php:39
+msgid "Published %s"
+msgstr ""
+
+#: page.php:49
+msgid "Updated %s"
+msgstr ""
+
+#: page.php:68
+msgid "Pages:"
+msgstr ""
+
+#: page.php:82
+msgid "Edit"
+msgstr ""
+
+#: page.php:96
+msgid "Subpages"
+msgstr ""
+
+#: page.php:120
+msgid "Read more"
+msgstr ""
+
+#: sidebar.php:30
+msgid "Sidebar"
+msgstr ""
+
+#: sidebar.php:38
+msgid "Search"
+msgstr ""
+
+#: sidebar.php:43
+msgid "Recent Posts"
+msgstr ""
+
+#: sidebar.php:69
+msgid "Categories"
+msgstr ""
+
+#: sidebar.php:87
+msgid "Tags"
+msgstr ""
+
+#: sidebar.php:103
+msgid "Archives"
+msgstr ""
+
+#: sidebar.php:116
+msgid "Newsletter"
+msgstr ""
+
+#: sidebar.php:118
+msgid "Subscribe to our newsletter to receive the latest news and articles about Yandex.Direct and internet marketing."
+msgstr ""
+
+#: sidebar.php:125
+msgid "Your email address"
+msgstr ""
+
+#: sidebar.php:130
+msgid "Your email"
+msgstr ""
+
+#: sidebar.php:133
+msgid "Subscribe"
+msgstr ""
+
+#: sidebar.php:135
+msgid "We don't spam and don't share data with third parties."
+msgstr ""
+
+#: sidebar.php:142
+msgid "We on social networks"
+msgstr ""
+
+#: sidebar.php:148
+msgid "VKontakte"
+msgstr ""
+
+#: sidebar.php:152
+msgid "Telegram"
+msgstr ""
+
+#: sidebar.php:156
+msgid "YouTube"
+msgstr ""
+
+#: sidebar.php:160
+msgid "Twitter"
+msgstr ""
+
+#: archive.php:38
+msgid "Found %s post"
+msgid_plural "Showing posts %2$s-%3$s of %1$s"
+msgstr[0] ""
+msgstr[1] ""
+
+#: archive.php:54
+msgid "Category:"
+msgstr ""
+
+#: archive.php:56
+msgid "Tag:"
+msgstr ""
+
+#: archive.php:61
+msgid "(%s post)"
+msgid_plural "(%s posts)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: archive.php:75
+msgid "Sort:"
+msgstr ""
+
+#: archive.php:77
+msgid "Newest first"
+msgstr ""
+
+#: archive.php:78
+msgid "Oldest first"
+msgstr ""
+
+#: archive.php:79
+msgid "By title (A-Z)"
+msgstr ""
+
+#: archive.php:80
+msgid "By title (Z-A)"
+msgstr ""
+
+#: archive.php:81
+msgid "By popularity"
+msgstr ""
+
+#: archive.php:86
+msgid "View:"
+msgstr ""
+
+#: archive.php:87
+msgid "Grid"
+msgstr ""
+
+#: archive.php:93
+msgid "List"
+msgstr ""
+
+#: archive.php:132
+msgid "Pinned post"
+msgstr ""
+
+#: archive.php:160
+msgid "No comments"
+msgstr ""
+
+#: archive.php:162
+msgid "%s comment"
+msgid_plural "%s comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: archive.php:179
+msgid "Read more"
+msgstr ""
+
+#: archive.php:187
+msgid "← Back"
+msgstr ""
+
+#: archive.php:188
+msgid "Forward →"
+msgstr ""
+
+#: archive.php:196
+msgid "Nothing found"
+msgstr ""
+
+#: archive.php:202
+msgid "No posts in this category yet. Try searching in other sections."
+msgstr ""
+
+#: archive.php:204
+msgid "No posts found with this tag. Try other tags."
+msgstr ""
+
+#: archive.php:206
+msgid "This author has no published posts yet."
+msgstr ""
+
+#: archive.php:208
+msgid "No posts found in archive for this period."
+msgstr ""
+
+#: archive.php:210
+msgid "No posts found. Try using search."
+msgstr ""
+
+#: archive.php:222
+msgid "Popular categories:"
+msgstr ""
+
+#: 404.php:39
+msgid "Page not found"
+msgstr ""
+
+#: 404.php:41
+msgid "Unfortunately, the page you requested does not exist. It may have been deleted, moved, or you entered the wrong address."
+msgstr ""
+
+#: 404.php:49
+msgid "Try to find what you need:"
+msgstr ""
+
+#: 404.php:56
+msgid "Home page"
+msgstr ""
+
+#: 404.php:57
+msgid "Return to the home page"
+msgstr ""
+
+#: 404.php:66
+msgid "Blog"
+msgstr ""
+
+#: 404.php:67
+msgid "Read latest articles"
+msgstr ""
+
+#: 404.php:77
+msgid "About us"
+msgstr ""
+
+#: 404.php:78
+msgid "Learn more about our project"
+msgstr ""
+
+#: 404.php:88
+msgid "Contacts"
+msgstr ""
+
+#: 404.php:89
+msgid "Contact us"
+msgstr ""
+
+#: 404.php:99
+msgid "Popular articles:"
+msgstr ""
+
+#: 404.php:137
+msgid "Categories:"
+msgstr ""
+
+#: 404.php:150
+msgid "Need help?"
+msgstr ""
+
+#: 404.php:153
+msgid "Check URL"
+msgstr ""
+
+#: 404.php:154
+msgid "Make sure the address is entered correctly. There may be a typo in the URL."
+msgstr ""
+
+#: 404.php:158
+msgid "Use search"
+msgstr ""
+
+#: 404.php:159
+msgid "Use the search form above to find the information you need."
+msgstr ""
+
+#: 404.php:163
+msgid "Go back"
+msgstr ""
+
+#: 404.php:165
+msgid "Go back to the previous page using the \"Back\" button in your browser, or "
+msgstr ""
+
+#: 404.php:166
+msgid "click here"
+msgstr ""
+
+#: 404.php:173
+msgid "Contact us"
+msgstr ""
+
+#: 404.php:175
+msgid "If the problem persists, "
+msgstr ""
+
+#: 404.php:177
+msgid "contact us"
+msgstr ""
+
+#: 404.php:179
+msgid " and we will help you find the necessary information."
+msgstr ""
+
+#: search.php:39
+msgid "Search results for: %s"
+msgstr ""
+
+#: search.php:48
+msgid "Found %s result"
+msgid_plural "Found %s results"
+msgstr[0] ""
+msgstr[1] ""
+
+#: search.php:55
+msgid "No results found"
+msgstr ""
+
+#: search.php:60
+msgid "Try changing your query or use advanced search:"
+msgstr ""
+
+#: search.php:67
+msgid "Search by:"
+msgstr ""
+
+#: search.php:69
+msgid "All content types"
+msgstr ""
+
+#: search.php:70
+msgid "Remove filter"
+msgstr ""
+
+#: search.php:75
+msgid "Sort:"
+msgstr ""
+
+#: search.php:77
+msgid "By relevance"
+msgstr ""
+
+#: search.php:78
+msgid "Newest first"
+msgstr ""
+
+#: search.php:79
+msgid "Oldest first"
+msgstr ""
+
+#: search.php:80
+msgid "By title"
+msgstr ""
+
+#: search.php:95
+msgid "Post"
+msgstr ""
+
+#: search.php:97
+msgid "Page"
+msgstr ""
+
+#: search.php:107
+msgid "Author: %s"
+msgstr ""
+
+#: search.php:132
+msgid "Categories:"
+msgstr ""
+
+#: search.php:142
+msgid "Read more"
+msgstr ""
+
+#: search.php:149
+msgid "%s comment"
+msgid_plural "%s comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: search.php:151
+msgid "Leave a comment"
+msgstr ""
+
+#: search.php:162
+msgid "← Back"
+msgstr ""
+
+#: search.php:163
+msgid "Forward →"
+msgstr ""
+
+#: search.php:175
+msgid "Nothing found"
+msgstr ""
+
+#: search.php:181
+msgid "Unfortunately, nothing was found for your query. Try:"
+msgstr ""
+
+#: search.php:185
+msgid "Change query"
+msgstr ""
+
+#: search.php:187
+msgid "Check spelling"
+msgstr ""
+
+#: search.php:188
+msgid "Use more general words"
+msgstr ""
+
+#: search.php:189
+msgid "Try synonyms"
+msgstr ""
+
+#: search.php:190
+msgid "Remove extra words"
+msgstr ""
+
+#: search.php:196
+msgid "New search:"
+msgstr ""
+
+#: search.php:207
+msgid "Popular content:"
+msgstr ""
+
+#: search.php:221
+msgid "%s comment"
+msgid_plural "%s comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: search.php:237
+msgid "Browse by categories:"
+msgstr ""
+
+#: comments.php:31
+msgid "One comment on &ldquo;%1$s&rdquo;"
+msgstr ""
+
+#: comments.php:35
+msgid "%1$s comment on &ldquo;%2$s&rdquo;"
+msgid_plural "%1$s comments on &ldquo;%2$s&rdquo;"
+msgstr[0] ""
+msgstr[1] ""
+
+#: comments.php:47
+msgid "Comments are closed."
+msgstr ""
+
+#: comments.php:89
+msgid "%1$s at %2$s"
+msgstr ""
+
+#: comments.php:93
+msgid "Edit"
+msgstr ""
+
+#: comments.php:98
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#: comments.php:108
+msgid "Reply"
+msgstr ""
+
+#: comments.php:141
+msgid "Name"
+msgstr ""
+
+#: comments.php:145
+msgid "Email"
+msgstr ""
+
+#: comments.php:147
+msgid "Email will not be published"
+msgstr ""
+
+#: comments.php:151
+msgid "Website"
+msgstr ""
+
+#: comments.php:156
+msgid "I agree to the processing of personal data"
+msgstr ""
+
+#: comments.php:163
+msgid "You must <a href=\"%s\">log in</a> to post a comment."
+msgstr ""
+
+#: comments.php:167
+msgid "Logged in as <a href=\"%1$s\">%2$s</a>. <a href=\"%3$s\" title=\"Log out of this account\">Log out?</a>"
+msgstr ""
+
+#: comments.php:175
+msgid "Your email address will not be published."
+msgstr ""
+
+#: comments.php:176
+msgid " Required fields are marked *"
+msgstr ""
+
+#: comments.php:184
+msgid "Leave a comment"
+msgstr ""
+
+#: comments.php:185
+msgid "Reply to %s"
+msgstr ""
+
+#: comments.php:189
+msgid "Cancel reply"
+msgstr ""
+
+#: comments.php:190
+msgid "Post Comment"
+msgstr ""
+
+#: comments.php:205
+msgid "Your comment contains forbidden words."
+msgstr ""
+
+#: comments.php:210
+msgid "Comment is too short. Minimum 10 characters."
+msgstr ""
+
+#: comments.php:230
+msgid "Duplicate comments are not allowed."
+msgstr ""
+
+#: comments.php:242
+msgid "You have already liked this comment"
+msgstr ""
+
+#: comments.php:250
+msgid "Thanks for the like!"
+msgstr ""
+
+#: page-templates/page-landing.php:70
+msgid "Ready to improve your advertising campaigns?"
+msgstr ""
+
+#: page-templates/page-landing.php:72
+msgid "Subscribe to our blog and receive weekly insights about contextual advertising"
+msgstr ""
+
+#: page-templates/page-landing.php:77
+msgid "Subscribe to blog"
+msgstr ""
+
+#: page-templates/page-landing.php:80
+msgid "Contact us"
+msgstr ""
+
+#: page-templates/page-landing.php:219
+msgid "Name *"
+msgstr ""
+
+#: page-templates/page-landing.php:224
+msgid "Email *"
+msgstr ""
+
+#: page-templates/page-landing.php:230
+msgid "Phone"
+msgstr ""
+
+#: page-templates/page-landing.php:235
+msgid "Company"
+msgstr ""
+
+#: page-templates/page-landing.php:241
+msgid "Subject"
+msgstr ""
+
+#: page-templates/page-landing.php:243
+msgid "Choose subject"
+msgstr ""
+
+#: page-templates/page-landing.php:244
+msgid "Consultation"
+msgstr ""
+
+#: page-templates/page-landing.php:245
+msgid "Advertising audit"
+msgstr ""
+
+#: page-templates/page-landing.php:246
+msgid "Advertising management"
+msgstr ""
+
+#: page-templates/page-landing.php:247
+msgid "Training"
+msgstr ""
+
+#: page-templates/page-landing.php:248
+msgid "Other"
+msgstr ""
+
+#: page-templates/page-landing.php:253
+msgid "Message *"
+msgstr ""
+
+#: page-templates/page-landing.php:254
+msgid "Tell us about your project or task..."
+msgstr ""
+
+#: page-templates/page-landing.php:261
+msgid "I agree with <a href=\"%s\" target=\"_blank\">privacy policy</a> *"
+msgstr ""
+
+#: page-templates/page-landing.php:268
+msgid "Subscribe to newsletter with useful materials"
+msgstr ""
+
+#: page-templates/page-landing.php:274
+msgid "Send request"
+msgstr ""
+
+#: page-templates/page-landing.php:283
+msgid "Thank you! Your request has been sent. We will contact you soon."
+msgstr ""
+
+#: page-templates/page-landing.php:286
+msgid "An error occurred while sending. Please try again or contact us directly."
+msgstr ""
+
+#: page-templates/page-landing.php:315
+msgid "Security error"
+msgstr ""
+
+#: page-templates/page-landing.php:351
+msgid "Error"
+msgstr ""
+
+#: page-templates/page-landing.php:371
+msgid "[%s] New request from landing page"
+msgstr ""
+
+#: page-templates/page-landing.php:374
+msgid "Consultation"
+msgstr ""
+
+#: page-templates/page-landing.php:375
+msgid "Advertising audit"
+msgstr ""
+
+#: page-templates/page-landing.php:376
+msgid "Advertising management"
+msgstr ""
+
+#: page-templates/page-landing.php:377
+msgid "Training"
+msgstr ""
+
+#: page-templates/page-landing.php:378
+msgid "Other"
+msgstr ""
+
+#: page-templates/page-landing.php:381
+msgid "Not specified"
+msgstr ""
+
+#: page-templates/page-landing.php:384
+msgid "New request from landing page:\n\nName: %s\nEmail: %s\nPhone: %s\nCompany: %s\nSubject: %s\nMessage: %s\n\nNewsletter subscription: %s\n\nDate: %s\nIP: %s\nUser Agent: %s"
+msgstr ""
+
+#: page-templates/page-landing.php:390
+msgid "Not specified"
+msgstr ""
+
+#: page-templates/page-landing.php:391
+msgid "Not specified"
+msgstr ""
+
+#: page-templates/page-landing.php:394
+msgid "Yes"
+msgstr ""
+
+#: page-templates/page-landing.php:394
+msgid "No"
+msgstr ""
+
+#: page-templates/page-landing.php:457
+msgid "Landing settings"
+msgstr ""
+
+#: page-templates/page-landing.php:479
+msgid "Hero button text"
+msgstr ""
+
+#: page-templates/page-landing.php:483
+msgid "Hero button URL"
+msgstr ""
+
+#: page-templates/page-landing.php:487
+msgid "CTA section title"
+msgstr ""
+
+#: page-templates/page-landing.php:491
+msgid "CTA section content"
+msgstr ""
+
+#: page-templates/page-landing.php:495
+msgid "CTA button text"
+msgstr ""
+
+#: page-templates/page-landing.php:499
+msgid "CTA button URL"
+msgstr ""
+
+#: page-templates/page-landing.php:503
+msgid "Show contact form"
+msgstr ""
+
+#: page-templates/page-landing.php:507
+msgid "Contact form title"
+msgstr ""
+
+#: page-templates/page-landing.php:511
+msgid "Contact form description"
+msgstr ""
+
+#: inc/customizer.php:45
+msgid "YandexPro Theme Settings"
+msgstr ""
+
+#: inc/customizer.php:46
+msgid "Customize your theme appearance and functionality"
+msgstr ""
+
+#: inc/customizer.php:54
+msgid "Color Scheme"
+msgstr ""
+
+#: inc/customizer.php:63
+msgid "Choose color scheme"
+msgstr ""
+
+#: inc/customizer.php:64
+msgid "Color scheme determines the main colors of the site"
+msgstr ""
+
+#: inc/customizer.php:66
+msgid "Default (blue)"
+msgstr ""
+
+#: inc/customizer.php:67
+msgid "Green"
+msgstr ""
+
+#: inc/customizer.php:68
+msgid "Purple"
+msgstr ""
+
+#: inc/customizer.php:69
+msgid "Orange"
+msgstr ""
+
+#: inc/customizer.php:70
+msgid "Red"
+msgstr ""
+
+#: inc/customizer.php:82
+msgid "Primary Color"
+msgstr ""
+
+#: inc/customizer.php:83
+msgid "Used for headings and main elements"
+msgstr ""
+
+#: inc/customizer.php:93
+msgid "Accent Color"
+msgstr ""
+
+#: inc/customizer.php:94
+msgid "Used for links and buttons"
+msgstr ""
+
+#: inc/customizer.php:104
+msgid "Enable dark theme toggle"
+msgstr ""
+
+#: inc/customizer.php:105
+msgid "Adds a button to switch between light and dark themes"
+msgstr ""
+
+#: inc/customizer.php:114
+msgid "Typography"
+msgstr ""
+
+#: inc/customizer.php:123
+msgid "Use Google Fonts"
+msgstr ""
+
+#: inc/customizer.php:124
+msgid "Connect additional Google fonts"
+msgstr ""
+
+#: inc/customizer.php:133
+msgid "Primary Font"
+msgstr ""
+
+#: inc/customizer.php:134
+msgid "Font for headings and main text"
+msgstr ""
+
+#: inc/customizer.php:144
+msgid "Font Size"
+msgstr ""
+
+#: inc/customizer.php:147
+msgid "Small"
+msgstr ""
+
+#: inc/customizer.php:148
+msgid "Medium"
+msgstr ""
+
+#: inc/customizer.php:149
+msgid "Large"
+msgstr ""
+
+#: inc/customizer.php:158
+msgid "Layout"
+msgstr ""
+
+#: inc/customizer.php:167
+msgid "Container Width (px)"
+msgstr ""
+
+#: inc/customizer.php:168
+msgid "Maximum width of main content"
+msgstr ""
+
+#: inc/customizer.php:181
+msgid "Show Sidebar"
+msgstr ""
+
+#: inc/customizer.php:182
+msgid "Enable/disable sidebar on blog pages"
+msgstr ""
+
+#: inc/customizer.php:191
+msgid "Header Settings"
+msgstr ""
+
+#: inc/customizer.php:200
+msgid "Header Style"
+msgstr ""
+
+#: inc/customizer.php:203
+msgid "Default"
+msgstr ""
+
+#: inc/customizer.php:204
+msgid "Minimal"
+msgstr ""
+
+#: inc/customizer.php:205
+msgid "Centered"
+msgstr ""
+
+#: inc/customizer.php:214
+msgid "Show search in header"
+msgstr ""
+
+#: inc/customizer.php:215
+msgid "Adds a search button to the site header"
+msgstr ""
+
+#: inc/customizer.php:224
+msgid "Sticky Header"
+msgstr ""
+
+#: inc/customizer.php:225
+msgid "Header remains visible when scrolling"
+msgstr ""
+
+#: inc/customizer.php:234
+msgid "Hero Section"
+msgstr ""
+
+#: inc/customizer.php:243
+msgid "Hero Section Title"
+msgstr ""
+
+#: inc/customizer.php:244
+msgid "Main title on the home page"
+msgstr ""
+
+#: inc/customizer.php:253
+msgid "Hero Section Description"
+msgstr ""
+
+#: inc/customizer.php:254
+msgid "Brief description under the title"
+msgstr ""
+
+#: inc/customizer.php:263
+msgid "Button Text"
+msgstr ""
+
+#: inc/customizer.php:264
+msgid "Text on the button in Hero section"
+msgstr ""
+
+#: inc/customizer.php:273
+msgid "Button Link"
+msgstr ""
+
+#: inc/customizer.php:274
+msgid "URL for the button in Hero section"
+msgstr ""
+
+#: inc/customizer.php:283
+msgid "Footer Settings"
+msgstr ""
+
+#: inc/customizer.php:292
+msgid "Custom footer text"
+msgstr ""
+
+#: inc/customizer.php:293
+msgid "Replace standard copyright with your text. HTML supported."
+msgstr ""
+
+#: inc/customizer.php:302
+msgid "Show theme credit"
+msgstr ""
+
+#: inc/customizer.php:303
+msgid "Support theme developers"
+msgstr ""
+
+#: inc/customizer.php:312
+msgid "Show \"Back to Top\" button"
+msgstr ""
+
+#: inc/customizer.php:313
+msgid "Adds a quick jump to page top button"
+msgstr ""
+
+#: inc/customizer.php:322
+msgid "Social Media"
+msgstr ""
+
+#: inc/customizer.php:331
+msgid "Show social media links"
+msgstr ""
+
+#: inc/customizer.php:332
+msgid "Adds social media icons to footer"
+msgstr ""
+
+#: inc/customizer.php:341
+msgid "Facebook"
+msgstr ""
+
+#: inc/customizer.php:342
+msgid "Twitter"
+msgstr ""
+
+#: inc/customizer.php:343
+msgid "Instagram"
+msgstr ""
+
+#: inc/customizer.php:344
+msgid "LinkedIn"
+msgstr ""
+
+#: inc/customizer.php:345
+msgid "YouTube"
+msgstr ""
+
+#: inc/customizer.php:346
+msgid "Telegram"
+msgstr ""
+
+#: inc/customizer.php:347
+msgid "VKontakte"
+msgstr ""
+
+#: inc/customizer.php:356
+msgid "%s link"
+msgstr ""
+
+#: inc/customizer.php:366
+msgid "Blog Settings"
+msgstr ""
+
+#: inc/customizer.php:375
+msgid "Show breadcrumbs"
+msgstr ""
+
+#: inc/customizer.php:376
+msgid "Navigation breadcrumbs on post pages"
+msgstr ""
+
+#: inc/customizer.php:385
+msgid "Excerpt Length (words)"
+msgstr ""
+
+#: inc/customizer.php:386
+msgid "Number of words in post excerpt"
+msgstr ""
+
+#: inc/template-tags.php:30
+msgid "Posted %s"
+msgstr ""
+
+#: inc/template-tags.php:47
+msgid "by %s"
+msgstr ""
+
+#: inc/template-tags.php:62
+msgid "Posted in %1$s"
+msgstr ""
+
+#: inc/template-tags.php:69
+msgid "Tagged %1$s"
+msgstr ""
+
+#: inc/template-tags.php:79
+msgid "Leave a comment"
+msgstr ""
+
+#: inc/template-tags.php:94
+msgid "Edit"
+msgstr ""
+
+#: inc/template-tags.php:126
+msgid "Home"
+msgstr ""
+
+#: inc/template-tags.php:143
+msgid "Search results: %s"
+msgstr ""
+
+#: inc/template-tags.php:145
+msgid "Page not found"
+msgstr ""
+
+#: inc/template-tags.php:171
+msgid "Breadcrumbs"
+msgstr ""
+
+#: inc/template-tags.php:265
+msgid "Share:"
+msgstr ""
+
+#: inc/template-tags.php:272
+msgid "Share on %s"
+msgstr ""
+
+#: inc/template-tags.php:332
+msgid "All posts by %s"
+msgstr ""
+
+#: inc/template-tags.php:336
+msgid "Author's website"
+msgstr ""
+
+#: inc/template-tags.php:352
+msgid "Post navigation"
+msgstr ""
+
+#: inc/template-tags.php:353
+msgid "Post navigation"
+msgstr ""
+
+#: inc/template-tags.php:361
+msgid "Previous post:"
+msgstr ""
+
+#: inc/template-tags.php:368
+msgid "Next post:"
+msgstr ""
+
+#: inc/template-tags.php:382
+msgid "Site search"
+msgstr ""
+
+#: inc/template-tags.php:390
+msgid "Search..."
+msgstr ""
+
+#: inc/template-tags.php:391
+msgid "Find"
+msgstr ""
+
+#: inc/template-tags.php:396
+msgid "Find"
+msgstr ""
+
+#: inc/block-patterns.php:23
+msgid "YandexPro"
+msgstr ""
+
+#: inc/block-patterns.php:28
+msgid "Hero Section"
+msgstr ""
+
+#: inc/block-patterns.php:29
+msgid "Main section with title, description and button"
+msgstr ""
+
+#: inc/block-patterns.php:49
+msgid "Features Section"
+msgstr ""
+
+#: inc/block-patterns.php:50
+msgid "Grid with advantages and features"
+msgstr ""
+
+#: inc/block-patterns.php:84
+msgid "Call to Action"
+msgstr ""
+
+#: inc/block-patterns.php:85
+msgid "Section with call to action and button"
+msgstr ""
+
+#: inc/block-patterns.php:100
+msgid "Blog Posts Grid"
+msgstr ""
+
+#: inc/block-patterns.php:101
+msgid "Grid with latest blog posts"
+msgstr ""
+
+#: inc/block-patterns.php:118
+msgid "Statistics and Numbers"
+msgstr ""
+
+#: inc/block-patterns.php:119
+msgid "Section with important numbers and statistics"
+msgstr ""
+
+#: inc/block-patterns.php:155
+msgid "About Us Section"
+msgstr ""
+
+#: inc/block-patterns.php:156
+msgid "Section with company information"
+msgstr ""
+
+#: inc/block-patterns.php:186
+msgid "Frequently Asked Questions"
+msgstr ""
+
+#: inc/block-patterns.php:187
+msgid "FAQ section"
+msgstr ""
+
+#: inc/block-patterns.php:231
+msgid "Contact Section"
+msgstr ""
+
+#: inc/block-patterns.php:232
+msgid "Section with contact information"
+msgstr ""
+
+#. Theme Name of the theme
+msgid "YandexPro Enhanced"
+msgstr ""
+
+#. Theme URI of the theme
+msgid "https://example.com/yandexpro-theme"
+msgstr ""
+
+#. Description of the theme
+msgid "Professional WordPress theme for blogs and business websites with Gutenberg support, mobile responsiveness and full customization through Customizer. Perfect for blogs about marketing, contextual advertising and IT topics."
+msgstr ""
+
+#. Author of the theme
+msgid "YandexPro Team"
+msgstr ""
+
+#. Author URI of the theme
+msgid "https://yandexpro.com"
+msgstr ""
