@@ -1,0 +1,32 @@
+# WordPress специфичные файлы
+wp-content/uploads/
+wp-content/cache/
+wp-content/backups/
+wp-content/upgrade/
+
+# Плагины (оставляем только кастомные)
+wp-content/plugins/akismet/
+wp-content/plugins/hello.php
+
+# Темы по умолчанию (оставляем только нашу)
+wp-content/themes/twenty*/
+
+# Конфигурация и секреты
+.env
+*.log
+
+# Docker данные
+db_data/
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+
+# IDE файлы
+.vscode/settings.json
+.idea/
+
+# Node modules (если будут)
+node_modules/

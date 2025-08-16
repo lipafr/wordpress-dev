@@ -1,0 +1,16 @@
+/*!
+Theme Name: YandexPRO Blog
+Description: Современная WordPress тема для блога о интернет-маркетинге и Яндекс Директ. Адаптивный дизайн, поддержка Gutenberg, SEO-оптимизация.
+Author: YandexPRO Team
+Version: 1.0.0
+Requires at least: 6.0
+Tested up to: 6.4
+Requires PHP: 8.0
+License: GPL v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: yandexpro-blog
+Domain Path: /languages
+Tags: blog, two-columns, custom-header, custom-menu, custom-logo, editor-style, featured-images, footer-widgets, sticky-post, theme-options, threaded-comments, translation-ready, block-styles, wide-blocks
+*/
+
+/* Основные стили загружаются из assets/css/main.css */
