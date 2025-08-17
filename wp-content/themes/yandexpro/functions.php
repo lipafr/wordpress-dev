@@ -1,6 +1,6 @@
 <?php
 /**
- * YandexPro Enhanced Theme Functions
+ * YandexPro Personal Theme Functions
  *
  * @package YandexPro
  * @since 1.0.0
@@ -12,10 +12,16 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Theme setup
+ * Theme version
+ */
+define('YANDEXPRO_VERSION', '1.0.0');
+
+/**
+ * Set up theme defaults and register support for various WordPress features
  */
 if (!function_exists('yandexpro_setup')) {
     function yandexpro_setup() {
+        
         // Make theme available for translation
         load_theme_textdomain('yandexpro', get_template_directory() . '/languages');
 
@@ -35,11 +41,12 @@ if (!function_exists('yandexpro_setup')) {
         add_image_size('yandexpro-large', 1200, 675, true);
         add_image_size('yandexpro-medium', 600, 400, true);
         add_image_size('yandexpro-small', 300, 200, true);
+        add_image_size('yandexpro-square', 400, 400, true);
 
         // Register navigation menus
         register_nav_menus(array(
             'primary' => __('Primary Menu', 'yandexpro'),
-            'footer' => __('Footer Menu', 'yandexpro'),
+            'footer'  => __('Footer Menu', 'yandexpro'),
         ));
 
         // Switch default core markup to output valid HTML5
@@ -64,73 +71,22 @@ if (!function_exists('yandexpro_setup')) {
 
         // Add support for core custom logo
         add_theme_support('custom-logo', array(
-            'height'      => 250,
+            'height'      => 100,
             'width'       => 250,
             'flex-width'  => true,
             'flex-height' => true,
         ));
 
-        // Gutenberg support
-        add_theme_support('wp-block-styles');
-        add_theme_support('align-wide');
-        add_theme_support('editor-styles');
-        add_editor_style('assets/css/editor-style.css');
-
         // Add support for responsive embedded content
         add_theme_support('responsive-embeds');
 
-        // Custom starter content
-        add_theme_support('starter-content', array(
-            'widgets' => array(
-                'sidebar-1' => array(
-                    'search',
-                    'recent-posts',
-                    'archives',
-                ),
-            ),
-            'posts' => array(
-                'home',
-                'about' => array(
-                    'post_title' => __('О нас', 'yandexpro'),
-                    'post_content' => __('Добро пожаловать на наш сайт о Яндекс.Директ и интернет-маркетинге.', 'yandexpro'),
-                ),
-                'contact' => array(
-                    'post_title' => __('Контакты', 'yandexpro'),
-                    'post_content' => __('Свяжитесь с нами для получения консультации.', 'yandexpro'),
-                ),
-                'blog' => array(
-                    'post_title' => __('Блог', 'yandexpro'),
-                    'post_content' => __('Последние статьи о контекстной рекламе и маркетинге.', 'yandexpro'),
-                ),
-            ),
-            'nav_menus' => array(
-                'primary' => array(
-                    'name' => __('Основное меню', 'yandexpro'),
-                    'items' => array(
-                        'link_home',
-                        'page_about',
-                        'page_blog',
-                        'page_contact',
-                    ),
-                ),
-            ),
-            'options' => array(
-                'show_on_front' => 'page',
-                'page_on_front' => '{{home}}',
-                'page_for_posts' => '{{blog}}',
-            ),
-        ));
+        // Content width
+        if (!isset($content_width)) {
+            $content_width = 800;
+        }
     }
 }
 add_action('after_setup_theme', 'yandexpro_setup');
-
-/**
- * Set the content width in pixels
- */
-function yandexpro_content_width() {
-    $GLOBALS['content_width'] = apply_filters('yandexpro_content_width', 1200);
-}
-add_action('after_setup_theme', 'yandexpro_content_width', 0);
 
 /**
  * Register widget areas
@@ -138,9 +94,9 @@ add_action('after_setup_theme', 'yandexpro_content_width', 0);
 if (!function_exists('yandexpro_widgets_init')) {
     function yandexpro_widgets_init() {
         register_sidebar(array(
-            'name'          => __('Основной сайдбар', 'yandexpro'),
+            'name'          => __('Primary Sidebar', 'yandexpro'),
             'id'            => 'sidebar-1',
-            'description'   => __('Добавьте виджеты для отображения в основном сайдбаре.', 'yandexpro'),
+            'description'   => __('Add widgets here to appear in your primary sidebar.', 'yandexpro'),
             'before_widget' => '<section id="%1$s" class="widget %2$s">',
             'after_widget'  => '</section>',
             'before_title'  => '<h3 class="widget-title">',
@@ -148,9 +104,9 @@ if (!function_exists('yandexpro_widgets_init')) {
         ));
 
         register_sidebar(array(
-            'name'          => __('Область виджетов в футере', 'yandexpro'),
-            'id'            => 'footer-widgets',
-            'description'   => __('Добавьте виджеты для отображения в футере.', 'yandexpro'),
+            'name'          => __('Footer Widget Area', 'yandexpro'),
+            'id'            => 'footer-1',
+            'description'   => __('Add widgets here to appear in your footer.', 'yandexpro'),
             'before_widget' => '<div id="%1$s" class="footer-widget %2$s">',
             'after_widget'  => '</div>',
             'before_title'  => '<h4 class="footer-widget-title">',
@@ -165,185 +121,203 @@ add_action('widgets_init', 'yandexpro_widgets_init');
  */
 if (!function_exists('yandexpro_scripts')) {
     function yandexpro_scripts() {
-        $theme_version = wp_get_theme()->get('Version');
-
-        // Enqueue main stylesheet
-        wp_enqueue_style('yandexpro-style', get_stylesheet_uri(), array(), $theme_version);
+        // Theme stylesheet
+        wp_enqueue_style('yandexpro-style', get_stylesheet_uri(), array(), YANDEXPRO_VERSION);
         
-        // Enqueue main CSS file
-        wp_enqueue_style('yandexpro-main', get_template_directory_uri() . '/assets/css/main.css', array(), $theme_version);
+        // Main JavaScript file
+        wp_enqueue_script(
+            'yandexpro-script',
+            get_template_directory_uri() . '/assets/js/script.js',
+            array(),
+            YANDEXPRO_VERSION,
+            true
+        );
 
-        // Enqueue main JavaScript file
-        wp_enqueue_script('yandexpro-script', get_template_directory_uri() . '/assets/js/script.js', array(), $theme_version, true);
+        // Navigation script
+        wp_enqueue_script(
+            'yandexpro-navigation',
+            get_template_directory_uri() . '/assets/js/navigation.js',
+            array(),
+            YANDEXPRO_VERSION,
+            true
+        );
 
         // Localize script for AJAX and translations
-        wp_localize_script('yandexpro-script', 'yandexpro_ajax', array(
+        wp_localize_script('yandexpro-script', 'yandexpro_vars', array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('yandexpro_nonce'),
-            'menu_toggle' => __('Переключить навигацию', 'yandexpro'),
-            'menu_close' => __('Закрыть навигацию', 'yandexpro'),
+            'nonce'    => wp_create_nonce('yandexpro_nonce'),
+            'strings'  => array(
+                'menu_toggle' => __('Toggle navigation', 'yandexpro'),
+                'menu_close'  => __('Close navigation', 'yandexpro'),
+                'search'      => __('Search', 'yandexpro'),
+            ),
         ));
 
-        // Conditional loading for comment-reply script
+        // Comment reply script
         if (is_singular() && comments_open() && get_option('thread_comments')) {
             wp_enqueue_script('comment-reply');
-        }
-
-        // Google Fonts (with display=swap)
-        $google_fonts_url = yandexpro_google_fonts_url();
-        if ($google_fonts_url) {
-            wp_enqueue_style('yandexpro-fonts', $google_fonts_url, array(), null);
         }
     }
 }
 add_action('wp_enqueue_scripts', 'yandexpro_scripts');
 
 /**
- * Get Google Fonts URL
- */
-if (!function_exists('yandexpro_google_fonts_url')) {
-    function yandexpro_google_fonts_url() {
-        $fonts_url = '';
-        $font_families = array();
-
-        // Check if custom fonts are enabled in Customizer
-        if (get_theme_mod('yandexpro_enable_google_fonts', false)) {
-            $primary_font = get_theme_mod('yandexpro_primary_font', 'Inter');
-            $secondary_font = get_theme_mod('yandexpro_secondary_font', 'Inter');
-
-            if ($primary_font && $primary_font !== 'system') {
-                $font_families[] = $primary_font . ':400,600,700';
-            }
-
-            if ($secondary_font && $secondary_font !== 'system' && $secondary_font !== $primary_font) {
-                $font_families[] = $secondary_font . ':400,600';
-            }
-
-            if (!empty($font_families)) {
-                $query_args = array(
-                    'family' => implode('|', $font_families),
-                    'subset' => 'latin,latin-ext,cyrillic',
-                    'display' => 'swap',
-                );
-
-                $fonts_url = add_query_arg($query_args, 'https://fonts.googleapis.com/css');
-            }
-        }
-
-        return esc_url_raw($fonts_url);
-    }
-}
-
-/**
  * Custom excerpt length
  */
 if (!function_exists('yandexpro_excerpt_length')) {
     function yandexpro_excerpt_length($length) {
-        return is_admin() ? $length : 25;
+        if (is_admin()) {
+            return $length;
+        }
+        return 30; // Default excerpt length
     }
 }
 add_filter('excerpt_length', 'yandexpro_excerpt_length', 999);
 
 /**
- * Custom excerpt more text
+ * Custom excerpt more string
  */
 if (!function_exists('yandexpro_excerpt_more')) {
     function yandexpro_excerpt_more($more) {
         if (is_admin()) {
             return $more;
         }
-        return '... <a class="read-more" href="' . get_permalink() . '">' . __('Читать далее', 'yandexpro') . '</a>';
+        return '...';
     }
 }
 add_filter('excerpt_more', 'yandexpro_excerpt_more');
 
 /**
- * Add structured data for SEO
+ * Custom "Continue reading" link
  */
-if (!function_exists('yandexpro_structured_data')) {
-    function yandexpro_structured_data() {
-        if (is_singular('post')) {
-            $post_id = get_the_ID();
-            $schema = array(
-                '@context' => 'https://schema.org',
-                '@type' => 'Article',
-                'headline' => get_the_title(),
-                'datePublished' => get_the_date('c'),
-                'dateModified' => get_the_modified_date('c'),
-                'author' => array(
-                    '@type' => 'Person',
-                    'name' => get_the_author(),
-                ),
-                'publisher' => array(
-                    '@type' => 'Organization',
-                    'name' => get_bloginfo('name'),
-                ),
-                'mainEntityOfPage' => array(
-                    '@type' => 'WebPage',
-                    '@id' => get_permalink(),
-                ),
+if (!function_exists('yandexpro_continue_reading_link')) {
+    function yandexpro_continue_reading_link() {
+        if (!is_admin()) {
+            return sprintf(
+                '<a href="%s" class="btn btn-primary continue-reading">%s</a>',
+                esc_url(get_permalink()),
+                __('Continue reading', 'yandexpro')
             );
-
-            if (has_post_thumbnail()) {
-                $schema['image'] = array(
-                    '@type' => 'ImageObject',
-                    'url' => get_the_post_thumbnail_url($post_id, 'large'),
-                );
-            }
-
-            echo '<script type="application/ld+json">' . wp_json_encode($schema) . '</script>' . "\n";
         }
     }
 }
-add_action('wp_head', 'yandexpro_structured_data');
 
 /**
- * Optimize images
+ * Calculate reading time
  */
-function yandexpro_add_responsive_image_attributes($attr, $attachment, $size) {
-    $attr['loading'] = 'lazy';
-    $attr['decoding'] = 'async';
-    return $attr;
+if (!function_exists('yandexpro_reading_time')) {
+    function yandexpro_reading_time($post_id = null) {
+        if (!$post_id) {
+            $post_id = get_the_ID();
+        }
+        
+        $content = get_post_field('post_content', $post_id);
+        $word_count = str_word_count(strip_tags($content));
+        $reading_time = ceil($word_count / 200); // Average reading speed: 200 words per minute
+        
+        return $reading_time;
+    }
 }
-add_filter('wp_get_attachment_image_attributes', 'yandexpro_add_responsive_image_attributes', 10, 3);
 
 /**
- * Security enhancements
+ * Add security headers
  */
-function yandexpro_security_headers() {
-    if (!is_admin()) {
-        // Remove WordPress version from head
-        remove_action('wp_head', 'wp_generator');
-        
-        // Remove RSD link
-        remove_action('wp_head', 'rsd_link');
-        
-        // Remove wlwmanifest.xml
-        remove_action('wp_head', 'wlwmanifest_link');
-        
-        // Remove shortlink
-        remove_action('wp_head', 'wp_shortlink_wp_head');
+if (!function_exists('yandexpro_security_headers')) {
+    function yandexpro_security_headers() {
+        if (!is_admin()) {
+            // Remove WordPress version from head and feeds
+            remove_action('wp_head', 'wp_generator');
+            
+            // Remove RSD link
+            remove_action('wp_head', 'rsd_link');
+            
+            // Remove wlwmanifest.xml
+            remove_action('wp_head', 'wlwmanifest_link');
+            
+            // Remove shortlink
+            remove_action('wp_head', 'wp_shortlink_wp_head');
+            
+            // Remove adjacent posts links
+            remove_action('wp_head', 'adjacent_posts_rel_link_wp_head');
+        }
     }
 }
 add_action('init', 'yandexpro_security_headers');
 
 /**
- * Page Templates Registration
+ * Optimize images - add loading="lazy" and decoding="async"
  */
-function yandexpro_add_page_templates($templates) {
-    $templates['page-templates/page-landing.php'] = __('Лендинг', 'yandexpro');
-    $templates['page-templates/page-blog.php'] = __('Страница блога', 'yandexpro');
-    $templates['page-templates/page-contact.php'] = __('Страница контактов', 'yandexpro');
-    return $templates;
+if (!function_exists('yandexpro_add_image_attributes')) {
+    function yandexpro_add_image_attributes($attr, $attachment, $size) {
+        $attr['loading'] = 'lazy';
+        $attr['decoding'] = 'async';
+        return $attr;
+    }
 }
-add_filter('theme_page_templates', 'yandexpro_add_page_templates');
+add_filter('wp_get_attachment_image_attributes', 'yandexpro_add_image_attributes', 10, 3);
 
-// Include additional files
+/**
+ * Add theme support for starter content
+ */
+if (!function_exists('yandexpro_starter_content')) {
+    function yandexpro_starter_content() {
+        add_theme_support('starter-content', array(
+            'widgets' => array(
+                'sidebar-1' => array(
+                    'search',
+                    'recent-posts',
+                    'archives',
+                ),
+                'footer-1' => array(
+                    'text_about',
+                ),
+            ),
+            'posts' => array(
+                'home' => array(
+                    'post_title' => __('Welcome to YandexPro', 'yandexpro'),
+                    'post_content' => __('This is your homepage. You can customize it from the WordPress admin panel.', 'yandexpro'),
+                ),
+                'about' => array(
+                    'post_title' => __('About Us', 'yandexpro'),
+                    'post_content' => __('Tell your visitors about yourself and your website.', 'yandexpro'),
+                ),
+                'contact' => array(
+                    'post_title' => __('Contact', 'yandexpro'),
+                    'post_content' => __('Get in touch with us.', 'yandexpro'),
+                ),
+                'blog' => array(
+                    'post_title' => __('Blog', 'yandexpro'),
+                    'post_content' => __('This is your blog page.', 'yandexpro'),
+                ),
+            ),
+            'nav_menus' => array(
+                'primary' => array(
+                    'name' => __('Primary Menu', 'yandexpro'),
+                    'items' => array(
+                        'page_home',
+                        'page_about',
+                        'page_blog',
+                        'page_contact',
+                    ),
+                ),
+            ),
+            'options' => array(
+                'show_on_front'  => 'page',
+                'page_on_front'  => '{{home}}',
+                'page_for_posts' => '{{blog}}',
+            ),
+        ));
+    }
+}
+add_action('after_setup_theme', 'yandexpro_starter_content');
+
+/**
+ * Include additional files
+ */
 $inc_files = array(
     'inc/customizer.php',
     'inc/template-tags.php',
     'inc/template-functions.php',
-    'inc/block-patterns.php',
 );
 
 foreach ($inc_files as $file) {
@@ -352,4 +326,66 @@ foreach ($inc_files as $file) {
         require $filepath;
     }
 }
-?>
+
+/**
+ * Page templates registration
+ */
+if (!function_exists('yandexpro_add_page_templates')) {
+    function yandexpro_add_page_templates($templates) {
+        $templates['page-templates/page-landing.php'] = __('Landing Page', 'yandexpro');
+        $templates['page-templates/page-blog.php'] = __('Blog Page', 'yandexpro');
+        $templates['page-templates/page-contact.php'] = __('Contact Page', 'yandexpro');
+        return $templates;
+    }
+}
+add_filter('theme_page_templates', 'yandexpro_add_page_templates');
+
+/**
+ * Disable emoji scripts (performance optimization)
+ */
+if (!function_exists('yandexpro_disable_emojis')) {
+    function yandexpro_disable_emojis() {
+        remove_action('wp_head', 'print_emoji_detection_script', 7);
+        remove_action('admin_print_scripts', 'print_emoji_detection_script');
+        remove_action('wp_print_styles', 'print_emoji_styles');
+        remove_action('admin_print_styles', 'print_emoji_styles');
+        remove_filter('the_content_feed', 'wp_staticize_emoji');
+        remove_filter('comment_text_rss', 'wp_staticize_emoji');
+        remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
+    }
+}
+add_action('init', 'yandexpro_disable_emojis');
+
+/**
+ * Theme customization options (basic)
+ */
+if (!function_exists('yandexpro_get_theme_option')) {
+    function yandexpro_get_theme_option($option, $default = '') {
+        return get_theme_mod($option, $default);
+    }
+}
+
+/**
+ * Add body classes
+ */
+if (!function_exists('yandexpro_body_classes')) {
+    function yandexpro_body_classes($classes) {
+        // Add class for theme version
+        $classes[] = 'yandexpro-theme';
+        
+        // Add class if sidebar is active
+        if (is_active_sidebar('sidebar-1')) {
+            $classes[] = 'has-sidebar';
+        } else {
+            $classes[] = 'no-sidebar';
+        }
+        
+        // Add class for dark theme if enabled
+        if (yandexpro_get_theme_option('enable_dark_theme', false)) {
+            $classes[] = 'has-dark-theme-option';
+        }
+        
+        return $classes;
+    }
+}
+add_filter('body_class', 'yandexpro_body_classes');

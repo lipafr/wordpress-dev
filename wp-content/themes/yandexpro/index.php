@@ -1,136 +1,228 @@
 <?php
 /**
  * The main template file
+ *
+ * This is the most generic template file in a WordPress theme
+ * and one of the two required files for a theme (the other being style.css).
+ * It is used to display a page when nothing more specific matches a query.
+ * E.g., it puts together the home page when no home.php file exists.
+ *
+ * @package YandexPro
+ * @since 1.0.0
  */
 
 get_header();
 ?>
 
-<div class="hero-section">
+<main id="main" class="site-main" role="main">
     <div class="container">
-        <div class="hero-content">
-            <h1 class="hero-title">
-                <?php esc_html_e( 'Blog about', 'yandexpro-blog' ); ?> 
-                <span class="gradient-text"><?php esc_html_e( 'Yandex Direct', 'yandexpro-blog' ); ?></span><br>
-                <?php esc_html_e( 'and Internet Marketing', 'yandexpro-blog' ); ?>
-            </h1>
-            <p class="hero-description">
-                <?php esc_html_e( 'Practical cases, insights and trends from the world of contextual advertising. Only verified information from a practicing specialist.', 'yandexpro-blog' ); ?>
-            </p>
-            <div class="search-container">
-                <div class="search-icon">🔍</div>
-                <?php get_search_form(); ?>
-            </div>
-        </div>
-    </div>
-</div>
-
-<section class="categories-section">
-    <div class="container">
-        <div class="categories-list">
-            <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="category-tag active">
-                <?php esc_html_e( 'All Articles', 'yandexpro-blog' ); ?>
-            </a>
-            <?php
-            $categories = get_categories( array( 'number' => 6 ) );
-            foreach ( $categories as $category ) {
-                echo '<a href="' . esc_url( get_category_link( $category->term_id ) ) . '" class="category-tag">';
-                echo esc_html( $category->name );
-                echo '</a>';
-            }
-            ?>
-        </div>
-    </div>
-</section>
-
-<?php if ( have_posts() ) : ?>
-    <?php
-    // Featured post
-    $featured_query = new WP_Query( array(
-        'posts_per_page' => 1,
-        'meta_key'       => '_featured_post',
-        'meta_value'     => '1',
-    ) );
-    
-    if ( $featured_query->have_posts() ) :
-        while ( $featured_query->have_posts() ) :
-            $featured_query->the_post();
-            ?>
-            <section class="featured-article">
-                <div class="container">
-                    <div class="featured-content">
-                        <div class="featured-text">
-                            <div class="featured-meta">
-                                <span>📈 <?php esc_html_e( 'Featured', 'yandexpro-blog' ); ?></span>
-                                <span><?php echo esc_html( get_the_date() ); ?></span>
-                                <span><?php echo esc_html( yandexpro_reading_time() ); ?> <?php esc_html_e( 'min read', 'yandexpro-blog' ); ?></span>
-                            </div>
-                            <h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
-                            <p><?php echo esc_html( get_the_excerpt() ); ?></p>
-                            <a href="<?php the_permalink(); ?>" class="read-more">
-                                <?php esc_html_e( 'Read case →', 'yandexpro-blog' ); ?>
-                            </a>
-                        </div>
-                        <div class="featured-image">
-                            <?php if ( has_post_thumbnail() ) : ?>
-                                <?php the_post_thumbnail( 'yandexpro-hero', array( 'loading' => 'eager' ) ); ?>
+        
+        <?php if (is_home() && !is_front_page()) : ?>
+            <!-- Blog page header -->
+            <header class="page-header">
+                <h1 class="page-title"><?php esc_html_e('Latest Articles', 'yandexpro'); ?></h1>
+                <?php
+                $blog_description = yandexpro_get_theme_option('blog_description', '');
+                if ($blog_description) :
+                ?>
+                    <div class="page-description">
+                        <p><?php echo esc_html($blog_description); ?></p>
+                        <a href="<?php echo esc_url(get_permalink(get_option('page_for_posts'))); ?>" class="btn btn-primary">
+                            <?php esc_html_e('Read blog', 'yandexpro'); ?>
+                        </a>
+                    </div>
+                <?php endif; ?>
+            </header>
+        <?php elseif (is_home() && is_front_page()) : ?>
+            <!-- Home page header -->
+            <header class="page-header">
+                <h1 class="page-title sr-only"><?php esc_html_e('Latest articles', 'yandexpro'); ?></h1>
+            </header>
+        <?php endif; ?>
+        
+        <div class="content-area">
+            <div class="main-content">
+                
+                <?php if (have_posts()) : ?>
+                    
+                    <!-- Posts grid -->
+                    <div class="posts-grid">
+                        
+                        <?php while (have_posts()) : the_post(); ?>
+                            
+                            <article id="post-<?php the_ID(); ?>" <?php post_class('post-card'); ?>>
+                                
+                                <!-- Post thumbnail -->
+                                <?php if (has_post_thumbnail()) : ?>
+                                    <div class="post-thumbnail">
+                                        <a href="<?php the_permalink(); ?>" aria-hidden="true" tabindex="-1">
+                                            <?php
+                                            the_post_thumbnail('yandexpro-medium', array(
+                                                'alt' => the_title_attribute(array('echo' => false)),
+                                                'loading' => 'lazy',
+                                                'decoding' => 'async',
+                                            ));
+                                            ?>
+                                        </a>
+                                    </div>
+                                <?php endif; ?>
+                                
+                                <!-- Post content -->
+                                <div class="post-content">
+                                    
+                                    <!-- Post meta -->
+                                    <div class="post-meta">
+                                        <time class="post-date" datetime="<?php echo esc_attr(get_the_date('c')); ?>">
+                                            <?php
+                                            printf(
+                                                esc_html__('Published %s', 'yandexpro'),
+                                                '<span class="date">' . esc_html(get_the_date()) . '</span>'
+                                            );
+                                            ?>
+                                        </time>
+                                        
+                                        <?php if (get_the_author()) : ?>
+                                            <span class="post-author">
+                                                <?php
+                                                printf(
+                                                    esc_html__('Author: %s', 'yandexpro'),
+                                                    '<a href="' . esc_url(get_author_posts_url(get_the_author_meta('ID'))) . '">' . esc_html(get_the_author()) . '</a>'
+                                                );
+                                                ?>
+                                            </span>
+                                        <?php endif; ?>
+                                        
+                                        <?php if (function_exists('yandexpro_reading_time')) : ?>
+                                            <span class="reading-time">
+                                                <?php
+                                                printf(
+                                                    esc_html__('Reading time: %s min', 'yandexpro'),
+                                                    yandexpro_reading_time()
+                                                );
+                                                ?>
+                                            </span>
+                                        <?php endif; ?>
+                                    </div>
+                                    
+                                    <!-- Post title -->
+                                    <header class="post-header">
+                                        <?php
+                                        if (is_singular()) :
+                                            the_title('<h1 class="post-title">', '</h1>');
+                                        else :
+                                            the_title('<h2 class="post-title"><a href="' . esc_url(get_permalink()) . '" rel="bookmark">', '</a></h2>');
+                                        endif;
+                                        ?>
+                                    </header>
+                                    
+                                    <!-- Post categories -->
+                                    <?php
+                                    $categories = get_the_category();
+                                    if (!empty($categories)) :
+                                    ?>
+                                        <div class="post-categories">
+                                            <span class="categories-label"><?php esc_html_e('Categories: ', 'yandexpro'); ?></span>
+                                            <?php
+                                            $category_links = array();
+                                            foreach ($categories as $category) {
+                                                $category_links[] = '<a href="' . esc_url(get_category_link($category->term_id)) . '" class="category-link">' . esc_html($category->name) . '</a>';
+                                            }
+                                            echo implode(', ', $category_links);
+                                            ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    
+                                    <!-- Post excerpt -->
+                                    <div class="post-excerpt">
+                                        <?php
+                                        if (has_excerpt()) {
+                                            the_excerpt();
+                                        } else {
+                                            echo wp_trim_words(get_the_content(), yandexpro_get_theme_option('excerpt_length', 30), '...');
+                                        }
+                                        ?>
+                                    </div>
+                                    
+                                    <!-- Read more link -->
+                                    <div class="post-footer">
+                                        <a href="<?php the_permalink(); ?>" class="btn btn-primary read-more-link">
+                                            <?php esc_html_e('Read more', 'yandexpro'); ?>
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    
+                                </div><!-- .post-content -->
+                                
+                            </article><!-- #post-<?php the_ID(); ?> -->
+                            
+                        <?php endwhile; ?>
+                        
+                    </div><!-- .posts-grid -->
+                    
+                    <!-- Pagination -->
+                    <?php
+                    $prev_text = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> ' . esc_html__('← Previous posts', 'yandexpro');
+                    $next_text = esc_html__('Next posts →', 'yandexpro') . ' <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                    
+                    the_posts_pagination(array(
+                        'prev_text' => $prev_text,
+                        'next_text' => $next_text,
+                        'class'     => 'pagination-wrapper',
+                    ));
+                    ?>
+                    
+                <?php else : ?>
+                    
+                    <!-- No posts found -->
+                    <div class="no-posts-found">
+                        <header class="page-header">
+                            <h1 class="page-title"><?php esc_html_e('Nothing found', 'yandexpro'); ?></h1>
+                        </header>
+                        
+                        <div class="page-content">
+                            <?php if (is_home() && current_user_can('publish_posts')) : ?>
+                                <p>
+                                    <?php
+                                    printf(
+                                        wp_kses(
+                                            __('Ready to publish your first post? <a href="%1$s">Get started here</a>.', 'yandexpro'),
+                                            array(
+                                                'a' => array(
+                                                    'href' => array(),
+                                                ),
+                                            )
+                                        ),
+                                        esc_url(admin_url('post-new.php'))
+                                    );
+                                    ?>
+                                </p>
+                            <?php elseif (is_search()) : ?>
+                                <p><?php esc_html_e('Sorry, but nothing matched your search terms. Please try again with some different keywords.', 'yandexpro'); ?></p>
+                                <?php get_search_form(); ?>
+                            <?php else : ?>
+                                <p><?php esc_html_e('It seems we can\'t find what you\'re looking for. Perhaps searching can help.', 'yandexpro'); ?></p>
+                                <?php get_search_form(); ?>
                             <?php endif; ?>
                         </div>
                     </div>
-                </div>
-            </section>
-            <?php
-        endwhile;
-        wp_reset_postdata();
-    endif;
-    ?>
-
-    <section class="latest-articles">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title"><?php esc_html_e( 'Latest Articles', 'yandexpro-blog' ); ?></h2>
-                <p class="section-subtitle"><?php esc_html_e( 'Fresh materials and current topics', 'yandexpro-blog' ); ?></p>
-            </div>
-
-            <div class="content-with-sidebar">
-                <div class="main-content">
-                    <div class="articles-grid">
-                        <?php
-                        while ( have_posts() ) :
-                            the_post();
-                            get_template_part( 'template-parts/article-card' );
-                        endwhile;
-                        ?>
-                    </div>
-
-                    <?php yandexpro_pagination(); ?>
-                </div>
-
-                <?php get_sidebar(); ?>
-            </div>
-        </div>
-    </section>
-
-<?php else : ?>
-    <section class="no-posts">
-        <div class="container">
-            <h2><?php esc_html_e( 'Nothing found', 'yandexpro-blog' ); ?></h2>
-            <p><?php esc_html_e( 'It seems we can\'t find what you\'re looking for.', 'yandexpro-blog' ); ?></p>
-        </div>
-    </section>
-<?php endif; ?>
-
-<section class="newsletter-cta">
-    <div class="container">
-        <h2><?php esc_html_e( 'Don\'t miss new articles', 'yandexpro-blog' ); ?></h2>
-        <p><?php esc_html_e( 'Subscribe to the newsletter and get the best materials about contextual advertising', 'yandexpro-blog' ); ?></p>
-        <form class="newsletter-form" action="#" method="post">
-            <input type="email" name="email" class="newsletter-input" placeholder="<?php esc_attr_e( 'Your email', 'yandexpro-blog' ); ?>" required>
-            <button type="submit" class="newsletter-btn"><?php esc_html_e( 'Subscribe', 'yandexpro-blog' ); ?></button>
-            <?php wp_nonce_field( 'newsletter_subscribe', 'newsletter_nonce' ); ?>
-        </form>
-    </div>
-</section>
+                    
+                <?php endif; ?>
+                
+            </div><!-- .main-content -->
+            
+            <!-- Sidebar -->
+            <?php if (is_active_sidebar('sidebar-1') && yandexpro_get_theme_option('show_sidebar', true)) : ?>
+                <aside id="secondary" class="widget-area sidebar" role="complementary">
+                    <?php dynamic_sidebar('sidebar-1'); ?>
+                </aside>
+            <?php endif; ?>
+            
+        </div><!-- .content-area -->
+        
+    </div><!-- .container -->
+</main><!-- #main -->
 
 <?php
 get_footer();

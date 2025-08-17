@@ -6,189 +6,177 @@
  * @since 1.0.0
  */
 
+// Prevent direct access
 if (!defined('ABSPATH')) {
     exit;
 }
 
 /**
- * Add postMessage support for site title and description for the Theme Customizer.
+ * Add postMessage support for site title and description for the Theme Customizer
  */
 function yandexpro_customize_register($wp_customize) {
     
-    // Add postMessage support for existing controls
+    // Add postMessage support for default sections
     $wp_customize->get_setting('blogname')->transport = 'postMessage';
     $wp_customize->get_setting('blogdescription')->transport = 'postMessage';
     $wp_customize->get_setting('header_textcolor')->transport = 'postMessage';
 
-    // Remove sections we don't need
+    // Remove default colors section (we'll create our own)
     $wp_customize->remove_section('colors');
-    
-    if (isset($wp_customize->selective_refresh)) {
-        $wp_customize->selective_refresh->add_partial('blogname', array(
-            'selector'        => '.site-title a',
-            'render_callback' => 'yandexpro_customize_partial_blogname',
-        ));
-        $wp_customize->selective_refresh->add_partial('blogdescription', array(
-            'selector'        => '.site-description',
-            'render_callback' => 'yandexpro_customize_partial_blogdescription',
-        ));
-    }
 
-    // Theme Options Panel
-    $wp_customize->add_panel('yandexpro_theme_options', array(
-        'title'       => __('Настройки темы YandexPro', 'yandexpro'),
-        'description' => __('Настройте внешний вид и функциональность вашей темы', 'yandexpro'),
+    /**
+     * Theme Settings Panel
+     */
+    $wp_customize->add_panel('yandexpro_theme_settings', array(
+        'title'       => __('YandexPro Theme Settings', 'yandexpro'),
+        'description' => __('Customize your theme settings', 'yandexpro'),
         'priority'    => 30,
     ));
 
     /**
-     * Color Scheme Section
+     * 1. COLOR SCHEME SECTION
      */
-    $wp_customize->add_section('yandexpro_color_scheme', array(
-        'title'    => __('Цветовая схема', 'yandexpro'),
-        'panel'    => 'yandexpro_theme_options',
+    $wp_customize->add_section('yandexpro_colors', array(
+        'title'    => __('Color Scheme', 'yandexpro'),
+        'panel'    => 'yandexpro_theme_settings',
         'priority' => 10,
     ));
 
-    // Color Scheme Choice
-    $wp_customize->add_setting('yandexpro_color_scheme', array(
-        'default'           => 'default',
+    // Color scheme preset
+    $wp_customize->add_setting('color_scheme', array(
+        'default'           => 'blue',
         'sanitize_callback' => 'yandexpro_sanitize_select',
-        'transport'         => 'refresh',
+        'transport'         => 'postMessage',
     ));
 
-    $wp_customize->add_control('yandexpro_color_scheme', array(
-        'type'        => 'select',
-        'section'     => 'yandexpro_color_scheme',
-        'label'       => __('Выберите цветовую схему', 'yandexpro'),
-        'description' => __('Цветовая схема определяет основные цвета сайта', 'yandexpro'),
-        'choices'     => array(
-            'default' => __('По умолчанию (синий)', 'yandexpro'),
-            'green'   => __('Зеленая', 'yandexpro'),
-            'purple'  => __('Фиолетовая', 'yandexpro'),
-            'orange'  => __('Оранжевая', 'yandexpro'),
-            'red'     => __('Красная', 'yandexpro'),
+    $wp_customize->add_control('color_scheme', array(
+        'label'    => __('Color Scheme', 'yandexpro'),
+        'section'  => 'yandexpro_colors',
+        'type'     => 'select',
+        'choices'  => array(
+            'blue'   => __('Blue (Default)', 'yandexpro'),
+            'green'  => __('Green', 'yandexpro'),
+            'purple' => __('Purple', 'yandexpro'),
+            'orange' => __('Orange', 'yandexpro'),
+            'red'    => __('Red', 'yandexpro'),
+            'custom' => __('Custom Colors', 'yandexpro'),
         ),
     ));
 
-    // Primary Color
-    $wp_customize->add_setting('yandexpro_primary_color', array(
+    // Primary color
+    $wp_customize->add_setting('primary_color', array(
         'default'           => '#2c3e50',
         'sanitize_callback' => 'sanitize_hex_color',
         'transport'         => 'postMessage',
     ));
 
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'yandexpro_primary_color', array(
-        'label'       => __('Основной цвет', 'yandexpro'),
-        'description' => __('Используется для заголовков и основных элементов', 'yandexpro'),
-        'section'     => 'yandexpro_color_scheme',
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'primary_color', array(
+        'label'           => __('Primary Color', 'yandexpro'),
+        'section'         => 'yandexpro_colors',
+        'active_callback' => 'yandexpro_is_custom_color_scheme',
     )));
 
-    // Accent Color
-    $wp_customize->add_setting('yandexpro_accent_color', array(
+    // Accent color
+    $wp_customize->add_setting('accent_color', array(
         'default'           => '#3498db',
         'sanitize_callback' => 'sanitize_hex_color',
         'transport'         => 'postMessage',
     ));
 
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'yandexpro_accent_color', array(
-        'label'       => __('Акцентный цвет', 'yandexpro'),
-        'description' => __('Используется для ссылок и кнопок', 'yandexpro'),
-        'section'     => 'yandexpro_color_scheme',
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'accent_color', array(
+        'label'           => __('Accent Color', 'yandexpro'),
+        'section'         => 'yandexpro_colors',
+        'active_callback' => 'yandexpro_is_custom_color_scheme',
     )));
 
-    // Dark Mode Toggle
-    $wp_customize->add_setting('yandexpro_enable_dark_mode', array(
+    // Dark theme toggle
+    $wp_customize->add_setting('enable_dark_theme_toggle', array(
         'default'           => false,
         'sanitize_callback' => 'yandexpro_sanitize_checkbox',
         'transport'         => 'refresh',
     ));
 
-    $wp_customize->add_control('yandexpro_enable_dark_mode', array(
-        'type'        => 'checkbox',
-        'section'     => 'yandexpro_color_scheme',
-        'label'       => __('Включить переключатель темной темы', 'yandexpro'),
-        'description' => __('Добавляет кнопку переключения между светлой и темной темой', 'yandexpro'),
+    $wp_customize->add_control('enable_dark_theme_toggle', array(
+        'label'   => __('Enable Dark Theme Toggle', 'yandexpro'),
+        'section' => 'yandexpro_colors',
+        'type'    => 'checkbox',
     ));
 
     /**
-     * Typography Section
+     * 2. TYPOGRAPHY SECTION
      */
     $wp_customize->add_section('yandexpro_typography', array(
-        'title'    => __('Типографика', 'yandexpro'),
-        'panel'    => 'yandexpro_theme_options',
+        'title'    => __('Typography', 'yandexpro'),
+        'panel'    => 'yandexpro_theme_settings',
         'priority' => 20,
     ));
 
     // Enable Google Fonts
-    $wp_customize->add_setting('yandexpro_enable_google_fonts', array(
+    $wp_customize->add_setting('enable_google_fonts', array(
         'default'           => false,
         'sanitize_callback' => 'yandexpro_sanitize_checkbox',
         'transport'         => 'refresh',
     ));
 
-    $wp_customize->add_control('yandexpro_enable_google_fonts', array(
-        'type'        => 'checkbox',
-        'section'     => 'yandexpro_typography',
-        'label'       => __('Использовать Google Fonts', 'yandexpro'),
-        'description' => __('Подключает дополнительные шрифты Google', 'yandexpro'),
+    $wp_customize->add_control('enable_google_fonts', array(
+        'label'   => __('Enable Google Fonts', 'yandexpro'),
+        'section' => 'yandexpro_typography',
+        'type'    => 'checkbox',
     ));
 
-    // Primary Font
-    $wp_customize->add_setting('yandexpro_primary_font', array(
+    // Primary font
+    $wp_customize->add_setting('primary_font', array(
         'default'           => 'system',
         'sanitize_callback' => 'yandexpro_sanitize_select',
-        'transport'         => 'refresh',
+        'transport'         => 'postMessage',
     ));
 
-    $wp_customize->add_control('yandexpro_primary_font', array(
-        'type'        => 'select',
-        'section'     => 'yandexpro_typography',
-        'label'       => __('Основной шрифт', 'yandexpro'),
-        'description' => __('Шрифт для заголовков и основного текста', 'yandexpro'),
-        'choices'     => yandexpro_get_font_choices(),
+    $wp_customize->add_control('primary_font', array(
+        'label'           => __('Primary Font', 'yandexpro'),
+        'section'         => 'yandexpro_typography',
+        'type'            => 'select',
+        'choices'         => yandexpro_get_font_choices(),
         'active_callback' => 'yandexpro_is_google_fonts_enabled',
     ));
 
-    // Font Size
-    $wp_customize->add_setting('yandexpro_font_size', array(
+    // Font size
+    $wp_customize->add_setting('font_size', array(
         'default'           => 'medium',
         'sanitize_callback' => 'yandexpro_sanitize_select',
         'transport'         => 'postMessage',
     ));
 
-    $wp_customize->add_control('yandexpro_font_size', array(
-        'type'    => 'select',
+    $wp_customize->add_control('font_size', array(
+        'label'   => __('Font Size', 'yandexpro'),
         'section' => 'yandexpro_typography',
-        'label'   => __('Размер шрифта', 'yandexpro'),
+        'type'    => 'select',
         'choices' => array(
-            'small'  => __('Маленький', 'yandexpro'),
-            'medium' => __('Средний', 'yandexpro'),
-            'large'  => __('Большой', 'yandexpro'),
+            'small'  => __('Small', 'yandexpro'),
+            'medium' => __('Medium (Default)', 'yandexpro'),
+            'large'  => __('Large', 'yandexpro'),
         ),
     ));
 
     /**
-     * Layout Section
+     * 3. LAYOUT SECTION
      */
     $wp_customize->add_section('yandexpro_layout', array(
-        'title'    => __('Макет', 'yandexpro'),
-        'panel'    => 'yandexpro_theme_options',
+        'title'    => __('Layout', 'yandexpro'),
+        'panel'    => 'yandexpro_theme_settings',
         'priority' => 30,
     ));
 
-    // Container Width
-    $wp_customize->add_setting('yandexpro_container_width', array(
-        'default'           => '1200',
+    // Container width
+    $wp_customize->add_setting('container_width', array(
+        'default'           => 1200,
         'sanitize_callback' => 'absint',
         'transport'         => 'postMessage',
     ));
 
-    $wp_customize->add_control('yandexpro_container_width', array(
-        'type'        => 'range',
+    $wp_customize->add_control('container_width', array(
+        'label'       => __('Container Width (px)', 'yandexpro'),
         'section'     => 'yandexpro_layout',
-        'label'       => __('Ширина контейнера (px)', 'yandexpro'),
-        'description' => __('Максимальная ширина основного контента', 'yandexpro'),
+        'type'        => 'range',
         'input_attrs' => array(
             'min'  => 960,
             'max'  => 1600,
@@ -196,441 +184,879 @@ function yandexpro_customize_register($wp_customize) {
         ),
     ));
 
-    // Show Sidebar
-    $wp_customize->add_setting('yandexpro_show_sidebar', array(
+    // Show sidebar
+    $wp_customize->add_setting('show_sidebar', array(
         'default'           => true,
         'sanitize_callback' => 'yandexpro_sanitize_checkbox',
         'transport'         => 'refresh',
     ));
 
-    $wp_customize->add_control('yandexpro_show_sidebar', array(
-        'type'        => 'checkbox',
-        'section'     => 'yandexpro_layout',
-        'label'       => __('Показывать сайдбар', 'yandexpro'),
-        'description' => __('Включить/выключить боковую панель на страницах блога', 'yandexpro'),
+    $wp_customize->add_control('show_sidebar', array(
+        'label'   => __('Show Sidebar', 'yandexpro'),
+        'section' => 'yandexpro_layout',
+        'type'    => 'checkbox',
     ));
 
-    /**
-     * Header Section
-     */
-    $wp_customize->add_section('yandexpro_header', array(
-        'title'    => __('Настройки шапки', 'yandexpro'),
-        'panel'    => 'yandexpro_theme_options',
-        'priority' => 40,
-    ));
-
-    // Header Style
-    $wp_customize->add_setting('yandexpro_header_style', array(
+    // Header style
+    $wp_customize->add_setting('header_style', array(
         'default'           => 'default',
         'sanitize_callback' => 'yandexpro_sanitize_select',
         'transport'         => 'refresh',
     ));
 
-    $wp_customize->add_control('yandexpro_header_style', array(
+    $wp_customize->add_control('header_style', array(
+        'label'   => __('Header Style', 'yandexpro'),
+        'section' => 'yandexpro_layout',
         'type'    => 'select',
-        'section' => 'yandexpro_header',
-        'label'   => __('Стиль шапки', 'yandexpro'),
         'choices' => array(
-            'default' => __('По умолчанию', 'yandexpro'),
-            'minimal' => __('Минималистичный', 'yandexpro'),
-            'center'  => __('По центру', 'yandexpro'),
+            'default'    => __('Default', 'yandexpro'),
+            'minimal'    => __('Minimal', 'yandexpro'),
+            'centered'   => __('Centered', 'yandexpro'),
         ),
     ));
 
-    // Show Search in Header
-    $wp_customize->add_setting('yandexpro_show_header_search', array(
+    /**
+     * 4. HEADER SETTINGS SECTION
+     */
+    $wp_customize->add_section('yandexpro_header', array(
+        'title'    => __('Header Settings', 'yandexpro'),
+        'panel'    => 'yandexpro_theme_settings',
+        'priority' => 40,
+    ));
+
+    // Show search in header
+    $wp_customize->add_setting('show_search_in_header', array(
         'default'           => true,
         'sanitize_callback' => 'yandexpro_sanitize_checkbox',
         'transport'         => 'refresh',
     ));
 
-    $wp_customize->add_control('yandexpro_show_header_search', array(
-        'type'        => 'checkbox',
-        'section'     => 'yandexpro_header',
-        'label'       => __('Показать поиск в шапке', 'yandexpro'),
-        'description' => __('Добавляет кнопку поиска в шапку сайта', 'yandexpro'),
+    $wp_customize->add_control('show_search_in_header', array(
+        'label'   => __('Show Search in Header', 'yandexpro'),
+        'section' => 'yandexpro_header',
+        'type'    => 'checkbox',
     ));
 
-    // Sticky Header
-    $wp_customize->add_setting('yandexpro_sticky_header', array(
-        'default'           => true,
-        'sanitize_callback' => 'yandexpro_sanitize_checkbox',
-        'transport'         => 'refresh',
-    ));
-
-    $wp_customize->add_control('yandexpro_sticky_header', array(
-        'type'        => 'checkbox',
-        'section'     => 'yandexpro_header',
-        'label'       => __('Закрепленная шапка', 'yandexpro'),
-        'description' => __('Шапка остается видимой при прокрутке', 'yandexpro'),
-    ));
-
-    /**
-     * Hero Section
-     */
-    $wp_customize->add_section('yandexpro_hero', array(
-        'title'    => __('Главная секция (Hero)', 'yandexpro'),
-        'panel'    => 'yandexpro_theme_options',
-        'priority' => 50,
-    ));
-
-    // Hero Title
-    $wp_customize->add_setting('yandexpro_hero_title', array(
-        'default'           => get_bloginfo('name'),
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport'         => 'postMessage',
-    ));
-
-    $wp_customize->add_control('yandexpro_hero_title', array(
-        'type'        => 'text',
-        'section'     => 'yandexpro_hero',
-        'label'       => __('Заголовок Hero секции', 'yandexpro'),
-        'description' => __('Основной заголовок на главной странице', 'yandexpro'),
-    ));
-
-    // Hero Description
-    $wp_customize->add_setting('yandexpro_hero_description', array(
-        'default'           => get_bloginfo('description'),
-        'sanitize_callback' => 'sanitize_textarea_field',
-        'transport'         => 'postMessage',
-    ));
-
-    $wp_customize->add_control('yandexpro_hero_description', array(
-        'type'        => 'textarea',
-        'section'     => 'yandexpro_hero',
-        'label'       => __('Описание Hero секции', 'yandexpro'),
-        'description' => __('Краткое описание под заголовком', 'yandexpro'),
-    ));
-
-    // Hero Button Text
-    $wp_customize->add_setting('yandexpro_hero_button_text', array(
-        'default'           => __('Читать блог', 'yandexpro'),
-        'sanitize_callback' => 'sanitize_text_field',
-        'transport'         => 'postMessage',
-    ));
-
-    $wp_customize->add_control('yandexpro_hero_button_text', array(
-        'type'        => 'text',
-        'section'     => 'yandexpro_hero',
-        'label'       => __('Текст кнопки', 'yandexpro'),
-        'description' => __('Текст на кнопке в Hero секции', 'yandexpro'),
-    ));
-
-    // Hero Button URL
-    $wp_customize->add_setting('yandexpro_hero_button_url', array(
-        'default'           => '#latest-posts',
-        'sanitize_callback' => 'esc_url_raw',
-        'transport'         => 'postMessage',
-    ));
-
-    $wp_customize->add_control('yandexpro_hero_button_url', array(
-        'type'        => 'url',
-        'section'     => 'yandexpro_hero',
-        'label'       => __('Ссылка кнопки', 'yandexpro'),
-        'description' => __('URL для кнопки в Hero секции', 'yandexpro'),
-    ));
-
-    /**
-     * Footer Section
-     */
-    $wp_customize->add_section('yandexpro_footer', array(
-        'title'    => __('Настройки подвала', 'yandexpro'),
-        'panel'    => 'yandexpro_theme_options',
-        'priority' => 60,
-    ));
-
-    // Footer Text
-    $wp_customize->add_setting('yandexpro_footer_text', array(
-        'default'           => '',
-        'sanitize_callback' => 'wp_kses_post',
-        'transport'         => 'postMessage',
-    ));
-
-    $wp_customize->add_control('yandexpro_footer_text', array(
-        'type'        => 'textarea',
-        'section'     => 'yandexpro_footer',
-        'label'       => __('Пользовательский текст в подвале', 'yandexpro'),
-        'description' => __('Замените стандартный copyright на свой текст. Поддерживается HTML.', 'yandexpro'),
-    ));
-
-    // Show Theme Credit
-    $wp_customize->add_setting('yandexpro_show_theme_credit', array(
-        'default'           => true,
-        'sanitize_callback' => 'yandexpro_sanitize_checkbox',
-        'transport'         => 'postMessage',
-    ));
-
-    $wp_customize->add_control('yandexpro_show_theme_credit', array(
-        'type'        => 'checkbox',
-        'section'     => 'yandexpro_footer',
-        'label'       => __('Показать ссылку на тему', 'yandexpro'),
-        'description' => __('Поддержите разработчиков темы', 'yandexpro'),
-    ));
-
-    // Back to Top Button
-    $wp_customize->add_setting('yandexpro_show_back_to_top', array(
-        'default'           => true,
-        'sanitize_callback' => 'yandexpro_sanitize_checkbox',
-        'transport'         => 'refresh',
-    ));
-
-    $wp_customize->add_control('yandexpro_show_back_to_top', array(
-        'type'        => 'checkbox',
-        'section'     => 'yandexpro_footer',
-        'label'       => __('Показать кнопку "Наверх"', 'yandexpro'),
-        'description' => __('Добавляет кнопку быстрого перехода в начало страницы', 'yandexpro'),
-    ));
-
-    /**
-     * Social Media Section
-     */
-    $wp_customize->add_section('yandexpro_social', array(
-        'title'    => __('Социальные сети', 'yandexpro'),
-        'panel'    => 'yandexpro_theme_options',
-        'priority' => 70,
-    ));
-
-    // Show Social Links
-    $wp_customize->add_setting('yandexpro_show_social_links', array(
+    // Sticky header
+    $wp_customize->add_setting('sticky_header', array(
         'default'           => false,
         'sanitize_callback' => 'yandexpro_sanitize_checkbox',
         'transport'         => 'refresh',
     ));
 
-    $wp_customize->add_control('yandexpro_show_social_links', array(
-        'type'        => 'checkbox',
-        'section'     => 'yandexpro_social',
-        'label'       => __('Показать ссылки на социальные сети', 'yandexpro'),
-        'description' => __('Добавляет иконки социальных сетей в подвал', 'yandexpro'),
+    $wp_customize->add_control('sticky_header', array(
+        'label'   => __('Sticky Header', 'yandexpro'),
+        'section' => 'yandexpro_header',
+        'type'    => 'checkbox',
     ));
 
-    // Social Media URLs
-    $social_networks = array(
-        'facebook'  => __('Facebook', 'yandexpro'),
-        'twitter'   => __('Twitter', 'yandexpro'),
-        'instagram' => __('Instagram', 'yandexpro'),
-        'linkedin'  => __('LinkedIn', 'yandexpro'),
-        'youtube'   => __('YouTube', 'yandexpro'),
-        'telegram'  => __('Telegram', 'yandexpro'),
-        'vk'        => __('ВКонтакте', 'yandexpro'),
-    );
-
-    foreach ($social_networks as $network => $label) {
-        $wp_customize->add_setting("yandexpro_{$network}_url", array(
-            'default'           => '',
-            'sanitize_callback' => 'esc_url_raw',
-            'transport'         => 'postMessage',
-        ));
-
-        $wp_customize->add_control("yandexpro_{$network}_url", array(
-            'type'            => 'url',
-            'section'         => 'yandexpro_social',
-            'label'           => sprintf(__('Ссылка на %s', 'yandexpro'), $label),
-            'active_callback' => 'yandexpro_is_social_links_enabled',
-        ));
-    }
-
-    /**
-     * Blog Section
-     */
-    $wp_customize->add_section('yandexpro_blog', array(
-        'title'    => __('Настройки блога', 'yandexpro'),
-        'panel'    => 'yandexpro_theme_options',
-        'priority' => 80,
-    ));
-
-    // Show Breadcrumbs
-    $wp_customize->add_setting('yandexpro_show_breadcrumbs', array(
+    // Show logo
+    $wp_customize->add_setting('show_logo', array(
         'default'           => true,
         'sanitize_callback' => 'yandexpro_sanitize_checkbox',
         'transport'         => 'refresh',
     ));
 
-    $wp_customize->add_control('yandexpro_show_breadcrumbs', array(
-        'type'        => 'checkbox',
-        'section'     => 'yandexpro_blog',
-        'label'       => __('Показать хлебные крошки', 'yandexpro'),
-        'description' => __('Навигационная цепочка на страницах постов', 'yandexpro'),
+    $wp_customize->add_control('show_logo', array(
+        'label'   => __('Show Logo', 'yandexpro'),
+        'section' => 'yandexpro_header',
+        'type'    => 'checkbox',
     ));
 
-    // Excerpt Length
-    $wp_customize->add_setting('yandexpro_excerpt_length', array(
-        'default'           => 25,
+    /**
+     * 5. HERO SECTION (for homepage)
+     */
+    $wp_customize->add_section('yandexpro_hero', array(
+        'title'    => __('Hero Section', 'yandexpro'),
+        'panel'    => 'yandexpro_theme_settings',
+        'priority' => 50,
+    ));
+
+    // Hero title
+    $wp_customize->add_setting('hero_title', array(
+        'default'           => __('Welcome to YandexPro', 'yandexpro'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport'         => 'postMessage',
+    ));
+
+    $wp_customize->add_control('hero_title', array(
+        'label'   => __('Hero Title', 'yandexpro'),
+        'section' => 'yandexpro_hero',
+        'type'    => 'text',
+    ));
+
+    // Hero description
+    $wp_customize->add_setting('hero_description', array(
+        'default'           => __('Your trusted source for marketing insights and advertising tips.', 'yandexpro'),
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'transport'         => 'postMessage',
+    ));
+
+    $wp_customize->add_control('hero_description', array(
+        'label'   => __('Hero Description', 'yandexpro'),
+        'section' => 'yandexpro_hero',
+        'type'    => 'textarea',
+    ));
+
+    // Hero button text
+    $wp_customize->add_setting('hero_button_text', array(
+        'default'           => __('Read Blog', 'yandexpro'),
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport'         => 'postMessage',
+    ));
+
+    $wp_customize->add_control('hero_button_text', array(
+        'label'   => __('Hero Button Text', 'yandexpro'),
+        'section' => 'yandexpro_hero',
+        'type'    => 'text',
+    ));
+
+    // Hero button link
+    $wp_customize->add_setting('hero_button_link', array(
+        'default'           => '#',
+        'sanitize_callback' => 'esc_url_raw',
+        'transport'         => 'refresh',
+    ));
+
+    $wp_customize->add_control('hero_button_link', array(
+        'label'   => __('Hero Button Link', 'yandexpro'),
+        'section' => 'yandexpro_hero',
+        'type'    => 'url',
+    ));
+
+    /**
+     * 6. FOOTER SETTINGS SECTION
+     */
+    $wp_customize->add_section('yandexpro_footer', array(
+        'title'    => __('Footer Settings', 'yandexpro'),
+        'panel'    => 'yandexpro_theme_settings',
+        'priority' => 60,
+    ));
+
+    // Footer description
+    $wp_customize->add_setting('footer_description', array(
+        'default'           => '',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport'         => 'postMessage',
+    ));
+
+    $wp_customize->add_control('footer_description', array(
+        'label'   => __('Footer Description', 'yandexpro'),
+        'section' => 'yandexpro_footer',
+        'type'    => 'text',
+    ));
+
+    // Custom copyright text
+    $wp_customize->add_setting('footer_copyright', array(
+        'default'           => '',
+        'sanitize_callback' => 'wp_kses_post',
+        'transport'         => 'postMessage',
+    ));
+
+    $wp_customize->add_control('footer_copyright', array(
+        'label'   => __('Custom Copyright Text', 'yandexpro'),
+        'section' => 'yandexpro_footer',
+        'type'    => 'textarea',
+    ));
+
+    // Show theme credit
+    $wp_customize->add_setting('show_theme_credit', array(
+        'default'           => true,
+        'sanitize_callback' => 'yandexpro_sanitize_checkbox',
+        'transport'         => 'postMessage',
+    ));
+
+    $wp_customize->add_control('show_theme_credit', array(
+        'label'   => __('Show Theme Credit', 'yandexpro'),
+        'section' => 'yandexpro_footer',
+        'type'    => 'checkbox',
+    ));
+
+    // Back to top button
+    $wp_customize->add_setting('show_back_to_top', array(
+        'default'           => true,
+        'sanitize_callback' => 'yandexpro_sanitize_checkbox',
+        'transport'         => 'refresh',
+    ));
+
+    $wp_customize->add_control('show_back_to_top', array(
+        'label'   => __('Show Back to Top Button', 'yandexpro'),
+        'section' => 'yandexpro_footer',
+        'type'    => 'checkbox',
+    ));
+
+    /**
+     * 7. SOCIAL LINKS SECTION
+     */
+    $wp_customize->add_section('yandexpro_social', array(
+        'title'    => __('Social Links', 'yandexpro'),
+        'panel'    => 'yandexpro_theme_settings',
+        'priority' => 70,
+    ));
+
+    // Enable social links
+    $wp_customize->add_setting('enable_social_links', array(
+        'default'           => false,
+        'sanitize_callback' => 'yandexpro_sanitize_checkbox',
+        'transport'         => 'refresh',
+    ));
+
+    $wp_customize->add_control('enable_social_links', array(
+        'label'   => __('Enable Social Links', 'yandexpro'),
+        'section' => 'yandexpro_social',
+        'type'    => 'checkbox',
+    ));
+
+    // Social platforms
+    $social_platforms = array(
+        'vk'        => __('VKontakte', 'yandexpro'),
+        'telegram'  => __('Telegram', 'yandexpro'),
+        'youtube'   => __('YouTube', 'yandexpro'),
+        'twitter'   => __('Twitter', 'yandexpro'),
+        'facebook'  => __('Facebook', 'yandexpro'),
+        'instagram' => __('Instagram', 'yandexpro'),
+        'linkedin'  => __('LinkedIn', 'yandexpro'),
+    );
+
+    foreach ($social_platforms as $platform => $label) {
+        $wp_customize->add_setting('social_' . $platform, array(
+            'default'           => '',
+            'sanitize_callback' => 'esc_url_raw',
+            'transport'         => 'refresh',
+        ));
+
+        $wp_customize->add_control('social_' . $platform, array(
+            'label'           => $label . ' ' . __('URL', 'yandexpro'),
+            'section'         => 'yandexpro_social',
+            'type'            => 'url',
+            'active_callback' => 'yandexpro_is_social_links_enabled',
+        ));
+    }
+
+    /**
+     * 8. BLOG SETTINGS SECTION
+     */
+    $wp_customize->add_section('yandexpro_blog', array(
+        'title'    => __('Blog Settings', 'yandexpro'),
+        'panel'    => 'yandexpro_theme_settings',
+        'priority' => 80,
+    ));
+
+    // Show breadcrumbs
+    $wp_customize->add_setting('show_breadcrumbs', array(
+        'default'           => true,
+        'sanitize_callback' => 'yandexpro_sanitize_checkbox',
+        'transport'         => 'refresh',
+    ));
+
+    $wp_customize->add_control('show_breadcrumbs', array(
+        'label'   => __('Show Breadcrumbs', 'yandexpro'),
+        'section' => 'yandexpro_blog',
+        'type'    => 'checkbox',
+    ));
+
+    // Excerpt length
+    $wp_customize->add_setting('excerpt_length', array(
+        'default'           => 30,
         'sanitize_callback' => 'absint',
         'transport'         => 'refresh',
     ));
 
-    $wp_customize->add_control('yandexpro_excerpt_length', array(
-        'type'        => 'number',
+    $wp_customize->add_control('excerpt_length', array(
+        'label'       => __('Excerpt Length (words)', 'yandexpro'),
         'section'     => 'yandexpro_blog',
-        'label'       => __('Длина анонса (слов)', 'yandexpro'),
-        'description' => __('Количество слов в анонсе поста', 'yandexpro'),
+        'type'        => 'range',
         'input_attrs' => array(
             'min'  => 10,
             'max'  => 100,
             'step' => 5,
         ),
     ));
+
+    // Blog description
+    $wp_customize->add_setting('blog_description', array(
+        'default'           => '',
+        'sanitize_callback' => 'sanitize_text_field',
+        'transport'         => 'postMessage',
+    ));
+
+    $wp_customize->add_control('blog_description', array(
+        'label'   => __('Blog Description', 'yandexpro'),
+        'section' => 'yandexpro_blog',
+        'type'    => 'text',
+    ));
+
+    // Show share buttons
+    $wp_customize->add_setting('show_share_buttons', array(
+        'default'           => true,
+        'sanitize_callback' => 'yandexpro_sanitize_checkbox',
+        'transport'         => 'refresh',
+    ));
+
+    $wp_customize->add_control('show_share_buttons', array(
+        'label'   => __('Show Share Buttons', 'yandexpro'),
+        'section' => 'yandexpro_blog',
+        'type'    => 'checkbox',
+    ));
+
+    // Show author bio
+    $wp_customize->add_setting('show_author_bio', array(
+        'default'           => true,
+        'sanitize_callback' => 'yandexpro_sanitize_checkbox',
+        'transport'         => 'refresh',
+    ));
+
+    $wp_customize->add_control('show_author_bio', array(
+        'label'   => __('Show Author Bio', 'yandexpro'),
+        'section' => 'yandexpro_blog',
+        'type'    => 'checkbox',
+    ));
+
+    // Show related posts
+    $wp_customize->add_setting('show_related_posts', array(
+        'default'           => true,
+        'sanitize_callback' => 'yandexpro_sanitize_checkbox',
+        'transport'         => 'refresh',
+    ));
+
+    $wp_customize->add_control('show_related_posts', array(
+        'label'   => __('Show Related Posts', 'yandexpro'),
+        'section' => 'yandexpro_blog',
+        'type'    => 'checkbox',
+    ));
+
+    // Show post navigation
+    $wp_customize->add_setting('show_post_navigation', array(
+        'default'           => true,
+        'sanitize_callback' => 'yandexpro_sanitize_checkbox',
+        'transport'         => 'refresh',
+    ));
+
+    $wp_customize->add_control('show_post_navigation', array(
+        'label'   => __('Show Post Navigation', 'yandexpro'),
+        'section' => 'yandexpro_blog',
+        'type'    => 'checkbox',
+    ));
 }
 add_action('customize_register', 'yandexpro_customize_register');
 
 /**
- * Render the site title for the selective refresh partial.
+ * Sanitization functions
  */
-function yandexpro_customize_partial_blogname() {
-    bloginfo('name');
-}
-
-/**
- * Render the site tagline for the selective refresh partial.
- */
-function yandexpro_customize_partial_blogdescription() {
-    bloginfo('description');
-}
-
-/**
- * Sanitization Functions
- */
-
-// Sanitize checkbox
 function yandexpro_sanitize_checkbox($checked) {
     return ((isset($checked) && true == $checked) ? true : false);
 }
 
-// Sanitize select
 function yandexpro_sanitize_select($input, $setting) {
     $input = sanitize_key($input);
     $choices = $setting->manager->get_control($setting->id)->choices;
     return (array_key_exists($input, $choices) ? $input : $setting->default);
 }
 
-// Sanitize number range
-function yandexpro_sanitize_number_range($number, $setting) {
-    $number = absint($number);
-    $atts = $setting->manager->get_control($setting->id)->input_attrs;
-    $min = (isset($atts['min']) ? $atts['min'] : $number);
-    $max = (isset($atts['max']) ? $atts['max'] : $number);
-    $step = (isset($atts['step']) ? $atts['step'] : 1);
-    return ($min <= $number && $number <= $max && is_int($number / $step) ? $number : $setting->default);
-}
-
 /**
- * Active Callbacks
+ * Active callback functions
  */
-
-// Check if Google Fonts are enabled
-function yandexpro_is_google_fonts_enabled() {
-    return get_theme_mod('yandexpro_enable_google_fonts', false);
+function yandexpro_is_custom_color_scheme() {
+    return get_theme_mod('color_scheme', 'blue') === 'custom';
 }
 
-// Check if social links are enabled
+function yandexpro_is_google_fonts_enabled() {
+    return get_theme_mod('enable_google_fonts', false);
+}
+
 function yandexpro_is_social_links_enabled() {
-    return get_theme_mod('yandexpro_show_social_links', false);
+    return get_theme_mod('enable_social_links', false);
 }
 
 /**
- * Get Font Choices
+ * Get font choices
  */
 function yandexpro_get_font_choices() {
-    return array(
-        'system'        => __('Системный шрифт', 'yandexpro'),
-        'Inter'         => 'Inter',
-        'Roboto'        => 'Roboto',
-        'Open Sans'     => 'Open Sans',
-        'Lato'          => 'Lato',
-        'Montserrat'    => 'Montserrat',
-        'Source Sans Pro' => 'Source Sans Pro',
-        'Raleway'       => 'Raleway',
-        'Ubuntu'        => 'Ubuntu',
-        'PT Sans'       => 'PT Sans',
-        'Nunito'        => 'Nunito',
+    $fonts = array(
+        'system' => __('System Fonts', 'yandexpro'),
     );
+    
+    if (get_theme_mod('enable_google_fonts', false)) {
+        $fonts = array_merge($fonts, array(
+            'roboto'     => 'Roboto',
+            'open-sans'  => 'Open Sans',
+            'lato'       => 'Lato',
+            'montserrat' => 'Montserrat',
+            'poppins'    => 'Poppins',
+            'nunito'     => 'Nunito',
+            'inter'      => 'Inter',
+        ));
+    }
+    
+    return $fonts;
 }
 
 /**
- * Output Custom CSS
+ * Bind JS handlers to Customizer controls
+ */
+function yandexpro_customize_preview_js() {
+    wp_enqueue_script('yandexpro-customizer', get_template_directory_uri() . '/assets/js/customizer.js', array('customize-preview'), YANDEXPRO_VERSION, true);
+}
+add_action('customize_preview_init', 'yandexpro_customize_preview_js');
+
+/**
+ * CSS output for customizer settings
  */
 function yandexpro_customizer_css() {
-    $primary_color = get_theme_mod('yandexpro_primary_color', '#2c3e50');
-    $accent_color = get_theme_mod('yandexpro_accent_color', '#3498db');
-    $container_width = get_theme_mod('yandexpro_container_width', 1200);
-    $font_size = get_theme_mod('yandexpro_font_size', 'medium');
-    
     $css = '';
     
-    // Color customizations
-    if ($primary_color !== '#2c3e50') {
-        $css .= "
-        :root {
-            --yandexpro-primary: {$primary_color};
-        }";
-    }
-    
-    if ($accent_color !== '#3498db') {
-        $css .= "
-        :root {
-            --yandexpro-accent: {$accent_color};
-        }";
-    }
-    
-    // Layout customizations
-    if ($container_width !== 1200) {
-        $css .= "
-        :root {
-            --yandexpro-container-width: {$container_width}px;
-        }";
-    }
-    
-    // Typography customizations
-    $font_sizes = array(
-        'small'  => '14px',
-        'medium' => '16px',
-        'large'  => '18px',
-    );
-    
-    if (isset($font_sizes[$font_size]) && $font_size !== 'medium') {
-        $css .= "
-        html {
-            font-size: {$font_sizes[$font_size]};
-        }";
-    }
-    
-    // Color scheme variations
-    $color_scheme = get_theme_mod('yandexpro_color_scheme', 'default');
-    if ($color_scheme !== 'default') {
-        $schemes = array(
-            'green'  => array('primary' => '#27ae60', 'accent' => '#2ecc71'),
-            'purple' => array('primary' => '#8e44ad', 'accent' => '#9b59b6'),
-            'orange' => array('primary' => '#e67e22', 'accent' => '#f39c12'),
-            'red'    => array('primary' => '#c0392b', 'accent' => '#e74c3c'),
-        );
-        
-        if (isset($schemes[$color_scheme])) {
-            $css .= "
-            :root {
-                --yandexpro-primary: {$schemes[$color_scheme]['primary']};
-                --yandexpro-accent: {$schemes[$color_scheme]['accent']};
-            }";
+    // Color scheme
+    $color_scheme = get_theme_mod('color_scheme', 'blue');
+    if ($color_scheme !== 'blue') {
+        $colors = yandexpro_get_color_scheme_colors($color_scheme);
+        if ($colors) {
+            $css .= ":root {\n";
+            foreach ($colors as $property => $color) {
+                $css .= "    --color-{$property}: {$color};\n";
+            }
+            $css .= "}\n";
         }
     }
     
-    if (!empty($css)) {
-        echo "<style type='text/css' id='yandexpro-customizer-css'>{$css}</style>";
+    // Custom colors
+    if ($color_scheme === 'custom') {
+        $primary_color = get_theme_mod('primary_color', '#2c3e50');
+        $accent_color = get_theme_mod('accent_color', '#3498db');
+        
+        $css .= ":root {\n";
+        $css .= "    --color-primary: {$primary_color};\n";
+        $css .= "    --color-accent: {$accent_color};\n";
+        $css .= "}\n";
+    }
+    
+    // Container width
+    $container_width = get_theme_mod('container_width', 1200);
+    if ($container_width !== 1200) {
+        $css .= ":root {\n";
+        $css .= "    --container-main: {$container_width}px;\n";
+        $css .= "}\n";
+    }
+    
+    // Font size
+    $font_size = get_theme_mod('font_size', 'medium');
+    if ($font_size !== 'medium') {
+        $font_sizes = array(
+            'small' => '14px',
+            'large' => '18px',
+        );
+        
+        if (isset($font_sizes[$font_size])) {
+            $css .= ":root {\n";
+            $css .= "    --font-size-base: {$font_sizes[$font_size]};\n";
+            $css .= "}\n";
+        }
+    }
+    
+    // Google Fonts
+    if (get_theme_mod('enable_google_fonts', false)) {
+        $primary_font = get_theme_mod('primary_font', 'system');
+        if ($primary_font !== 'system') {
+            $font_families = array(
+                'roboto'     => "'Roboto', sans-serif",
+                'open-sans'  => "'Open Sans', sans-serif",
+                'lato'       => "'Lato', sans-serif",
+                'montserrat' => "'Montserrat', sans-serif",
+                'poppins'    => "'Poppins', sans-serif",
+                'nunito'     => "'Nunito', sans-serif",
+                'inter'      => "'Inter', sans-serif",
+            );
+            
+            if (isset($font_families[$primary_font])) {
+                $css .= ":root {\n";
+                $css .= "    --font-family: {$font_families[$primary_font]};\n";
+                $css .= "}\n";
+            }
+        }
+    }
+    
+    // Sticky header
+    if (get_theme_mod('sticky_header', false)) {
+        $css .= "body { --header-position: sticky; }\n";
+        $css .= ".site-header { position: sticky; top: 0; z-index: var(--z-sticky); }\n";
+    }
+    
+    if ($css) {
+        echo "<style type=\"text/css\">\n{$css}\n</style>\n";
     }
 }
 add_action('wp_head', 'yandexpro_customizer_css');
 
 /**
- * Enqueue Customizer Preview JS
+ * Get color scheme colors
  */
-function yandexpro_customize_preview_js() {
+function yandexpro_get_color_scheme_colors($scheme) {
+    $color_schemes = array(
+        'green' => array(
+            'primary' => '#2d5a2d',
+            'accent'  => '#27ae60',
+        ),
+        'purple' => array(
+            'primary' => '#5a2d5a',
+            'accent'  => '#9b59b6',
+        ),
+        'orange' => array(
+            'primary' => '#5a2d2d',
+            'accent'  => '#e67e22',
+        ),
+        'red' => array(
+            'primary' => '#5a2d2d',
+            'accent'  => '#e74c3c',
+        ),
+    );
+    
+    return isset($color_schemes[$scheme]) ? $color_schemes[$scheme] : false;
+}
+
+/**
+ * Enqueue Google Fonts
+ */
+function yandexpro_google_fonts() {
+    if (!get_theme_mod('enable_google_fonts', false)) {
+        return;
+    }
+    
+    $primary_font = get_theme_mod('primary_font', 'system');
+    if ($primary_font === 'system') {
+        return;
+    }
+    
+    $google_fonts = array(
+        'roboto'     => 'Roboto:300,400,500,600,700',
+        'open-sans'  => 'Open+Sans:300,400,500,600,700',
+        'lato'       => 'Lato:300,400,700',
+        'montserrat' => 'Montserrat:300,400,500,600,700',
+        'poppins'    => 'Poppins:300,400,500,600,700',
+        'nunito'     => 'Nunito:300,400,600,700',
+        'inter'      => 'Inter:300,400,500,600,700',
+    );
+    
+    if (isset($google_fonts[$primary_font])) {
+        wp_enqueue_style(
+            'yandexpro-google-fonts',
+            'https://fonts.googleapis.com/css2?family=' . $google_fonts[$primary_font] . '&display=swap',
+            array(),
+            null
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'yandexpro_google_fonts');
+
+/**
+ * Add body classes based on customizer settings
+ */
+function yandexpro_customizer_body_classes($classes) {
+    // Color scheme
+    $color_scheme = get_theme_mod('color_scheme', 'blue');
+    $classes[] = 'color-scheme-' . $color_scheme;
+    
+    // Header style
+    $header_style = get_theme_mod('header_style', 'default');
+    $classes[] = 'header-style-' . $header_style;
+    
+    // Font size
+    $font_size = get_theme_mod('font_size', 'medium');
+    $classes[] = 'font-size-' . $font_size;
+    
+    // Sticky header
+    if (get_theme_mod('sticky_header', false)) {
+        $classes[] = 'sticky-header';
+    }
+    
+    // Sidebar
+    if (!get_theme_mod('show_sidebar', true)) {
+        $classes[] = 'no-sidebar';
+    }
+    
+    return $classes;
+}
+add_filter('body_class', 'yandexpro_customizer_body_classes');
+
+/**
+ * Add customizer styles for better preview
+ */
+function yandexpro_customizer_styles() {
+    if (!is_customize_preview()) {
+        return;
+    }
+    ?>
+    <style type="text/css">
+        /* Customizer preview styles */
+        .customize-partial-edit-shortcut {
+            position: relative !important;
+        }
+        
+        .customize-partial-edit-shortcut button {
+            background: var(--color-accent) !important;
+            border-color: var(--color-accent) !important;
+        }
+        
+        /* Live preview animations */
+        .customize-partial-refreshing {
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+        
+        /* Hero section preview */
+        .hero-section {
+            border: 2px dashed transparent;
+            transition: border-color 0.3s ease;
+        }
+        
+        .customize-preview .hero-section:hover {
+            border-color: var(--color-accent);
+        }
+    </style>
+    <?php
+}
+add_action('wp_head', 'yandexpro_customizer_styles');
+
+/**
+ * Customizer selective refresh
+ */
+function yandexpro_customize_selective_refresh($wp_customize) {
+    // Site title
+    $wp_customize->selective_refresh->add_partial('blogname', array(
+        'selector'        => '.site-title a',
+        'render_callback' => function() {
+            return get_bloginfo('name');
+        },
+    ));
+    
+    // Site description
+    $wp_customize->selective_refresh->add_partial('blogdescription', array(
+        'selector'        => '.site-description',
+        'render_callback' => function() {
+            return get_bloginfo('description');
+        },
+    ));
+    
+    // Hero title
+    $wp_customize->selective_refresh->add_partial('hero_title', array(
+        'selector'        => '.hero-title',
+        'render_callback' => function() {
+            return get_theme_mod('hero_title', __('Welcome to YandexPro', 'yandexpro'));
+        },
+    ));
+    
+    // Hero description
+    $wp_customize->selective_refresh->add_partial('hero_description', array(
+        'selector'        => '.hero-description',
+        'render_callback' => function() {
+            return get_theme_mod('hero_description', __('Your trusted source for marketing insights and advertising tips.', 'yandexpro'));
+        },
+    ));
+    
+    // Footer copyright
+    $wp_customize->selective_refresh->add_partial('footer_copyright', array(
+        'selector'        => '.footer-copyright',
+        'render_callback' => 'yandexpro_render_footer_copyright',
+    ));
+}
+add_action('customize_register', 'yandexpro_customize_selective_refresh', 20);
+
+/**
+ * Render footer copyright for selective refresh
+ */
+function yandexpro_render_footer_copyright() {
+    $custom_copyright = get_theme_mod('footer_copyright', '');
+    if ($custom_copyright) {
+        return wp_kses_post($custom_copyright);
+    } else {
+        return '<p>&copy; ' . date('Y') . ' <a href="' . esc_url(home_url('/')) . '">' . get_bloginfo('name') . '</a>. ' . __('All rights reserved.', 'yandexpro') . '</p>';
+    }
+}
+
+/**
+ * Customizer controls scripts
+ */
+function yandexpro_customize_controls_scripts() {
     wp_enqueue_script(
-        'yandexpro-customizer-preview',
-        get_template_directory_uri() . '/assets/js/customizer-preview.js',
-        array('customize-preview'),
-        wp_get_theme()->get('Version'),
+        'yandexpro-customizer-controls',
+        get_template_directory_uri() . '/assets/js/customizer-controls.js',
+        array('customize-controls'),
+        YANDEXPRO_VERSION,
         true
     );
+    
+    // Localize script
+    wp_localize_script('yandexpro-customizer-controls', 'yandexproCustomizer', array(
+        'presets' => array(
+            'blue' => array(
+                'primary' => '#2c3e50',
+                'accent'  => '#3498db',
+            ),
+            'green' => array(
+                'primary' => '#2d5a2d',
+                'accent'  => '#27ae60',
+            ),
+            'purple' => array(
+                'primary' => '#5a2d5a',
+                'accent'  => '#9b59b6',
+            ),
+            'orange' => array(
+                'primary' => '#5a2d2d',
+                'accent'  => '#e67e22',
+            ),
+            'red' => array(
+                'primary' => '#5a2d2d',
+                'accent'  => '#e74c3c',
+            ),
+        ),
+    ));
 }
-add_action('customize_preview_init', 'yandexpro_customize_preview_js');
-?>
+add_action('customize_controls_enqueue_scripts', 'yandexpro_customize_controls_scripts');
+
+/**
+ * Add reset button to customizer
+ */
+function yandexpro_customizer_reset_button($wp_customize) {
+    $wp_customize->add_section('yandexpro_reset', array(
+        'title'    => __('Reset Settings', 'yandexpro'),
+        'priority' => 200,
+    ));
+    
+    $wp_customize->add_setting('reset_theme_settings', array(
+        'default'           => '',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    
+    $wp_customize->add_control('reset_theme_settings', array(
+        'label'       => __('Reset all theme settings to defaults', 'yandexpro'),
+        'description' => __('Warning: This will reset all customizations. This action cannot be undone.', 'yandexpro'),
+        'section'     => 'yandexpro_reset',
+        'type'        => 'button',
+        'input_attrs' => array(
+            'value' => __('Reset Settings', 'yandexpro'),
+            'class' => 'button button-secondary yandexpro-reset-button',
+        ),
+    ));
+}
+add_action('customize_register', 'yandexpro_customizer_reset_button', 30);
+
+/**
+ * Handle settings reset
+ */
+function yandexpro_handle_customizer_reset() {
+    if (!current_user_can('customize')) {
+        wp_die(__('You do not have permission to reset theme settings.', 'yandexpro'));
+    }
+    
+    if (!wp_verify_nonce($_POST['_wpnonce'], 'yandexpro_reset_settings')) {
+        wp_die(__('Security check failed.', 'yandexpro'));
+    }
+    
+    // Get all theme mods
+    $theme_mods = get_theme_mods();
+    
+    // Remove all YandexPro theme mods
+    $yandexpro_settings = array(
+        'color_scheme', 'primary_color', 'accent_color', 'enable_dark_theme_toggle',
+        'enable_google_fonts', 'primary_font', 'font_size',
+        'container_width', 'show_sidebar', 'header_style',
+        'show_search_in_header', 'sticky_header', 'show_logo',
+        'hero_title', 'hero_description', 'hero_button_text', 'hero_button_link',
+        'footer_description', 'footer_copyright', 'show_theme_credit', 'show_back_to_top',
+        'enable_social_links', 'social_vk', 'social_telegram', 'social_youtube',
+        'social_twitter', 'social_facebook', 'social_instagram', 'social_linkedin',
+        'show_breadcrumbs', 'excerpt_length', 'blog_description', 'show_share_buttons',
+        'show_author_bio', 'show_related_posts', 'show_post_navigation'
+    );
+    
+    foreach ($yandexpro_settings as $setting) {
+        remove_theme_mod($setting);
+    }
+    
+    wp_redirect(admin_url('customize.php?reset=success'));
+    exit;
+}
+add_action('wp_ajax_yandexpro_reset_settings', 'yandexpro_handle_customizer_reset');
+
+/**
+ * Export/Import settings
+ */
+function yandexpro_customizer_export_import($wp_customize) {
+    $wp_customize->add_section('yandexpro_export_import', array(
+        'title'    => __('Export/Import Settings', 'yandexpro'),
+        'priority' => 190,
+    ));
+    
+    // Export settings
+    $wp_customize->add_setting('export_settings', array(
+        'default' => '',
+    ));
+    
+    $wp_customize->add_control('export_settings', array(
+        'label'       => __('Export Settings', 'yandexpro'),
+        'description' => __('Click to download your current theme settings.', 'yandexpro'),
+        'section'     => 'yandexpro_export_import',
+        'type'        => 'button',
+        'input_attrs' => array(
+            'value' => __('Export Settings', 'yandexpro'),
+            'class' => 'button button-primary yandexpro-export-button',
+        ),
+    ));
+    
+    // Import settings
+    $wp_customize->add_setting('import_settings', array(
+        'default' => '',
+    ));
+    
+    $wp_customize->add_control(new WP_Customize_Upload_Control($wp_customize, 'import_settings', array(
+        'label'       => __('Import Settings', 'yandexpro'),
+        'description' => __('Upload a settings file to restore your customizations.', 'yandexpro'),
+        'section'     => 'yandexpro_export_import',
+    )));
+}
+add_action('customize_register', 'yandexpro_customizer_export_import', 25);
+
+/**
+ * Get all customizer settings for export
+ */
+function yandexpro_get_customizer_settings() {
+    $settings = array();
+    $theme_mods = get_theme_mods();
+    
+    $yandexpro_settings = array(
+        'color_scheme', 'primary_color', 'accent_color', 'enable_dark_theme_toggle',
+        'enable_google_fonts', 'primary_font', 'font_size',
+        'container_width', 'show_sidebar', 'header_style',
+        'show_search_in_header', 'sticky_header', 'show_logo',
+        'hero_title', 'hero_description', 'hero_button_text', 'hero_button_link',
+        'footer_description', 'footer_copyright', 'show_theme_credit', 'show_back_to_top',
+        'enable_social_links', 'social_vk', 'social_telegram', 'social_youtube',
+        'social_twitter', 'social_facebook', 'social_instagram', 'social_linkedin',
+        'show_breadcrumbs', 'excerpt_length', 'blog_description', 'show_share_buttons',
+        'show_author_bio', 'show_related_posts', 'show_post_navigation'
+    );
+    
+    foreach ($yandexpro_settings as $setting) {
+        if (isset($theme_mods[$setting])) {
+            $settings[$setting] = $theme_mods[$setting];
+        }
+    }
+    
+    return $settings;
+}
+
+/**
+ * Admin notice for successful operations
+ */
+function yandexpro_customizer_admin_notices() {
+    if (isset($_GET['reset']) && $_GET['reset'] === 'success') {
+        echo '<div class="notice notice-success is-dismissible">';
+        echo '<p>' . __('Theme settings have been reset to defaults.', 'yandexpro') . '</p>';
+        echo '</div>';
+    }
+    
+    if (isset($_GET['import']) && $_GET['import'] === 'success') {
+        echo '<div class="notice notice-success is-dismissible">';
+        echo '<p>' . __('Theme settings have been imported successfully.', 'yandexpro') . '</p>';
+        echo '</div>';
+    }
+}
+add_action('admin_notices', 'yandexpro_customizer_admin_notices');
