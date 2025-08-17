@@ -389,3 +389,31 @@ if (!function_exists('yandexpro_body_classes')) {
     }
 }
 add_filter('body_class', 'yandexpro_body_classes');
+
+/**
+ * Breadcrumbs function
+ */
+if (!function_exists('yandexpro_breadcrumbs')) {
+    function yandexpro_breadcrumbs() {
+        if (is_front_page()) {
+            return;
+        }
+        
+        echo '<nav class="breadcrumbs" aria-label="' . esc_attr__('Breadcrumb', 'yandexpro') . '">';
+        echo '<a href="' . esc_url(home_url('/')) . '">' . esc_html__('Home', 'yandexpro') . '</a>';
+        
+        if (is_category() || is_single()) {
+            echo ' → ';
+            the_category(' → ');
+            if (is_single()) {
+                echo ' → ';
+                the_title();
+            }
+        } elseif (is_page()) {
+            echo ' → ';
+            the_title();
+        }
+        
+        echo '</nav>';
+    }
+}

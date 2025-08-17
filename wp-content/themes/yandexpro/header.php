@@ -92,15 +92,6 @@
                 <!-- Header actions -->
                 <div class="header-actions">
                     
-                    <!-- Search toggle -->
-                    <?php if (yandexpro_get_theme_option('show_search_in_header', true)) : ?>
-                        <button class="search-toggle" aria-controls="search-form" aria-expanded="false">
-                            <span class="sr-only"><?php esc_html_e('Search', 'yandexpro'); ?></span>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <path d="M21 21L16.514 16.506M19 10.5C19 15.194 15.194 19 10.5 19C5.806 19 2 15.194 2 10.5C2 5.806 5.806 2 10.5 2C15.194 2 19 5.806 19 10.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
-                    <?php endif; ?>
                     
                     <!-- Dark theme toggle -->
                     <?php if (yandexpro_get_theme_option('enable_dark_theme_toggle', false)) : ?>
