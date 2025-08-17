@@ -417,3 +417,205 @@ if (!function_exists('yandexpro_breadcrumbs')) {
         echo '</nav>';
     }
 }
+
+/**
+ * Настройки Customizer для избранных категорий (ОБНОВЛЕННАЯ ВЕРСИЯ С ЧЕКБОКСАМИ)
+ */
+if (!function_exists('yandexpro_customize_featured_categories')) {
+    function yandexpro_customize_featured_categories($wp_customize) {
+        
+        // Добавляем секцию для настроек блога
+        $wp_customize->add_section('yandexpro_blog_settings', array(
+            'title'    => __('Настройки блога', 'yandexpro'),
+            'priority' => 35,
+            'description' => __('Настройки отображения категорий в навигации блога', 'yandexpro'),
+        ));
+        
+        // Настройка количества видимых категорий изначально
+        $wp_customize->add_setting('yandexpro_visible_categories', array(
+            'default'           => 8,
+            'sanitize_callback' => 'absint',
+            'transport'         => 'refresh',
+        ));
+        
+        $wp_customize->add_control('yandexpro_visible_categories', array(
+            'label'       => __('Видимых категорий изначально', 'yandexpro'),
+            'description' => __('Сколько категорий показывать до нажатия "Смотреть всё"', 'yandexpro'),
+            'section'     => 'yandexpro_blog_settings',
+            'type'        => 'number',
+            'input_attrs' => array(
+                'min'  => 4,
+                'max'  => 16,
+                'step' => 1,
+            ),
+        ));
+        
+        // Настройка максимального количества категорий
+        $wp_customize->add_setting('yandexpro_max_categories', array(
+            'default'           => 20,
+            'sanitize_callback' => 'absint',
+            'transport'         => 'refresh',
+        ));
+        
+        $wp_customize->add_control('yandexpro_max_categories', array(
+            'label'       => __('Максимум категорий всего', 'yandexpro'),
+            'description' => __('Общее количество категорий (показываются после "Смотреть всё")', 'yandexpro'),
+            'section'     => 'yandexpro_blog_settings',
+            'type'        => 'number',
+            'input_attrs' => array(
+                'min'  => 8,
+                'max'  => 50,
+                'step' => 1,
+            ),
+        ));
+        
+        // Получаем все категории
+        $categories = get_categories(array(
+            'hide_empty' => false,
+            'exclude'    => array(1), // Исключаем "Без рубрики"
+            'orderby'    => 'name',
+            'order'      => 'ASC',
+        ));
+        
+        // Создаем отдельный чекбокс для каждой категории
+        $wp_customize->add_control_description = __('Выберите категории для отображения:', 'yandexpro');
+        
+        foreach ($categories as $category) {
+            
+            // Настройка для каждой категории
+            $wp_customize->add_setting('yandexpro_show_category_' . $category->term_id, array(
+                'default'           => false,
+                'sanitize_callback' => 'wp_validate_boolean',
+                'transport'         => 'refresh',
+            ));
+            
+            // Контрол чекбокс для каждой категории
+            $wp_customize->add_control('yandexpro_show_category_' . $category->term_id, array(
+                'label'   => $category->name . ' (' . $category->count . ' постов)',
+                'section' => 'yandexpro_blog_settings',
+                'type'    => 'checkbox',
+            ));
+        }
+    }
+}
+add_action('customize_register', 'yandexpro_customize_featured_categories');
+
+/**
+ * Получаем список всех категорий для выбора в Customizer
+ */
+if (!function_exists('yandexpro_get_categories_choices')) {
+    function yandexpro_get_categories_choices() {
+        $categories = get_categories(array(
+            'hide_empty' => false,
+            'exclude'    => array(1), // Исключаем "Без рубрики"
+            'orderby'    => 'name',
+            'order'      => 'ASC',
+        ));
+        
+        $choices = array();
+        
+        if (!empty($categories)) {
+            foreach ($categories as $category) {
+                $post_count = $category->count;
+                $count_text = sprintf(
+                    _n('%d пост', '%d постов', $post_count, 'yandexpro'),
+                    $post_count
+                );
+                $choices[$category->term_id] = $category->name . ' (' . $count_text . ')';
+            }
+        }
+        
+        return $choices;
+    }
+}
+
+/**
+ * Санитизация выбранных категорий
+ */
+if (!function_exists('yandexpro_sanitize_categories')) {
+    function yandexpro_sanitize_categories($input) {
+        if (is_array($input)) {
+            // Очищаем и валидируем ID категорий
+            $sanitized = array();
+            foreach ($input as $cat_id) {
+                $cat_id = absint($cat_id);
+                if ($cat_id > 0 && term_exists($cat_id, 'category')) {
+                    $sanitized[] = $cat_id;
+                }
+            }
+            return $sanitized;
+        }
+        return array();
+    }
+}
+
+/**
+ * Получаем избранные категории для отображения (ОБНОВЛЕННАЯ ВЕРСИЯ ДЛЯ ЧЕКБОКСОВ)
+ */
+if (!function_exists('yandexpro_get_featured_categories')) {
+    function yandexpro_get_featured_categories($get_all = false) {
+        $visible_categories = get_theme_mod('yandexpro_visible_categories', 8);
+        $max_categories = get_theme_mod('yandexpro_max_categories', 20);
+        $selected_categories = array();
+        
+        // Получаем все категории
+        $all_categories = get_categories(array(
+            'hide_empty' => false,
+            'exclude'    => array(1), // Исключаем "Без рубрики"
+            'orderby'    => 'name',
+            'order'      => 'ASC',
+        ));
+        
+        // Проверяем какие категории выбраны через чекбоксы
+        foreach ($all_categories as $category) {
+            $is_selected = get_theme_mod('yandexpro_show_category_' . $category->term_id, false);
+            if ($is_selected) {
+                $selected_categories[] = $category->term_id;
+            }
+        }
+        
+        // Если ничего не выбрано, показываем топ категории автоматически
+        if (empty($selected_categories)) {
+            $auto_categories = get_categories(array(
+                'orderby'    => 'count',
+                'order'      => 'DESC',
+                'number'     => $max_categories,
+                'hide_empty' => true,
+                'exclude'    => array(1), // Исключаем "Без рубрики"
+            ));
+            
+            foreach ($auto_categories as $category) {
+                $selected_categories[] = $category->term_id;
+            }
+        }
+        
+        // Возвращаем либо видимые, либо все категории
+        if ($get_all) {
+            return array_slice($selected_categories, 0, $max_categories);
+        } else {
+            return array_slice($selected_categories, 0, $visible_categories);
+        }
+    }
+}
+
+/**
+ * Получаем скрытые категории (которые показываются после "Смотреть всё")
+ */
+if (!function_exists('yandexpro_get_hidden_categories')) {
+    function yandexpro_get_hidden_categories() {
+        $visible_categories = get_theme_mod('yandexpro_visible_categories', 8);
+        $all_categories = yandexpro_get_featured_categories(true);
+        
+        // Возвращаем категории после видимых
+        return array_slice($all_categories, $visible_categories);
+    }
+}
+
+/**
+ * Проверяем, активна ли категория (для подсветки в навигации)
+ */
+if (!function_exists('yandexpro_is_category_active')) {
+    function yandexpro_is_category_active($category_id) {
+        return is_category($category_id);
+    }
+}
