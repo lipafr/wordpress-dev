@@ -1,6 +1,8 @@
 <?php
 /**
- * YandexPro Personal Theme Functions (МОДУЛЬНАЯ ВЕРСИЯ)
+ * YandexPro Enhanced WordPress Theme Functions
+ * 
+ * ИСПРАВЛЕННАЯ ВЕРСИЯ - Модульная архитектура
  *
  * @package YandexPro
  * @since 1.0.0
@@ -12,25 +14,46 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Theme version
+ * ========================================
+ * КОНСТАНТЫ - КРИТИЧНО ВАЖНО! (ПЕРВЫМ ДЕЛОМ)
+ * ========================================
  */
-define('YANDEXPRO_VERSION', '1.0.0');
 
-/**
- * Theme paths
- */
-define('YANDEXPRO_THEME_DIR', get_template_directory());
-define('YANDEXPRO_THEME_URL', get_template_directory_uri());
-define('YANDEXPRO_INC_DIR', YANDEXPRO_THEME_DIR . '/inc');
+// Theme version
+if (!defined('YANDEXPRO_VERSION')) {
+    define('YANDEXPRO_VERSION', '1.0.0');
+}
+
+// Theme paths
+if (!defined('YANDEXPRO_THEME_DIR')) {
+    define('YANDEXPRO_THEME_DIR', get_template_directory());
+}
+if (!defined('YANDEXPRO_THEME_URL')) {
+    define('YANDEXPRO_THEME_URL', get_template_directory_uri());
+}
+if (!defined('YANDEXPRO_INC_DIR')) {
+    define('YANDEXPRO_INC_DIR', YANDEXPRO_THEME_DIR . '/inc');
+}
 
 /**
  * ========================================
- * БЕЗОПАСНАЯ ЗАГРУЗКА МОДУЛЕЙ
+ * БАЗОВЫЕ ФУНКЦИИ (ДО ЗАГРУЗКИ МОДУЛЕЙ)
  * ========================================
  */
+
+/**
+ * Получение настроек темы из Customizer
+ * КРИТИЧНО ВАЖНАЯ ФУНКЦИЯ - используется везде!
+ */
+if (!function_exists('yandexpro_get_theme_option')) {
+    function yandexpro_get_theme_option($option_name, $default = '') {
+        return get_theme_mod($option_name, $default);
+    }
+}
 
 /**
  * Безопасное подключение модуля
+ * ОСНОВА МОДУЛЬНОЙ АРХИТЕКТУРЫ
  */
 if (!function_exists('yandexpro_require_module')) {
     function yandexpro_require_module($module_name, $required = false) {
@@ -38,31 +61,70 @@ if (!function_exists('yandexpro_require_module')) {
         
         if (file_exists($file_path)) {
             require_once $file_path;
+            
+            // Debug информация при успешной загрузке
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log("YandexPro: Module '{$module_name}' loaded successfully");
+            }
+            
             return true;
         } elseif ($required) {
             // Для критичных модулей показываем ошибку только админам
             if (current_user_can('manage_options')) {
                 add_action('admin_notices', function() use ($module_name) {
                     echo '<div class="notice notice-error"><p>';
-                    echo sprintf('YandexPro Theme: Required module "%s" not found.', esc_html($module_name));
+                    echo sprintf('YandexPro Theme: Required module "%s" not found. Please check file: /inc/%s.php', 
+                        esc_html($module_name), 
+                        esc_html($module_name)
+                    );
                     echo '</p></div>';
                 });
             }
+            
+            // Логируем критическую ошибку
+            error_log("YandexPro CRITICAL: Required module '{$module_name}' not found at: {$file_path}");
             return false;
         }
+        
+        // Для необязательных модулей просто логируем
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log("YandexPro: Optional module '{$module_name}' not found, using fallback");
+        }
+        
         return false;
     }
 }
 
 /**
  * ========================================
- * ВСТРОЕННЫЙ FALLBACK КОД
- * (на случай если модули не найдены)
+ * ЗАГРУЗКА МОДУЛЕЙ (ПРАВИЛЬНЫЙ ПОРЯДОК!)
+ * ========================================
+ */
+
+// КРИТИЧНО ВАЖНЫЕ модули (без них тема не работает)
+yandexpro_require_module('theme-setup', true);       // ПЕРВЫЙ! Базовая настройка
+yandexpro_require_module('enqueue-scripts', true);   // ВТОРОЙ! Подключение ресурсов
+
+// ФУНКЦИОНАЛЬНЫЕ модули (важные, но необязательные)
+yandexpro_require_module('customizer', false);       // Настройки Customizer
+yandexpro_require_module('template-tags', false);    // Теги шаблонов
+yandexpro_require_module('template-functions', false); // Функции шаблонов
+yandexpro_require_module('blog-categories', false);  // Управление категориями
+
+// ДОПОЛНИТЕЛЬНЫЕ модули (улучшения)
+yandexpro_require_module('security', false);         // Безопасность
+yandexpro_require_module('performance', false);      // Производительность
+yandexpro_require_module('starter-content', false);  // Стартовый контент
+
+/**
+ * ========================================
+ * FALLBACK СИСТЕМА (если модули не загрузились)
  * ========================================
  */
 
 /**
- * Базовая настройка темы (встроенная)
+ * Базовая настройка темы (fallback)
+ * Загружается если модуль theme-setup не найден
  */
 if (!function_exists('yandexpro_setup')) {
     function yandexpro_setup() {
@@ -125,6 +187,11 @@ if (!function_exists('yandexpro_setup')) {
         // Add support for responsive embedded content
         add_theme_support('responsive-embeds');
 
+        // Gutenberg support
+        add_theme_support('wp-block-styles');
+        add_theme_support('align-wide');
+        add_theme_support('editor-styles');
+        
         // Content width
         if (!isset($content_width)) {
             $content_width = 800;
@@ -134,7 +201,7 @@ if (!function_exists('yandexpro_setup')) {
 add_action('after_setup_theme', 'yandexpro_setup');
 
 /**
- * Register widget areas (встроенное)
+ * Register widget areas (fallback)
  */
 if (!function_exists('yandexpro_widgets_init')) {
     function yandexpro_widgets_init() {
@@ -162,41 +229,57 @@ if (!function_exists('yandexpro_widgets_init')) {
 add_action('widgets_init', 'yandexpro_widgets_init');
 
 /**
- * Enqueue scripts and styles (встроенное)
+ * Enqueue scripts and styles (fallback)
  */
 if (!function_exists('yandexpro_scripts')) {
     function yandexpro_scripts() {
-        // Theme stylesheet
+        // Theme stylesheet (всегда подключаем)
         wp_enqueue_style('yandexpro-style', get_stylesheet_uri(), array(), YANDEXPRO_VERSION);
         
-        // Main JavaScript file
-        wp_enqueue_script(
-            'yandexpro-script',
-            get_template_directory_uri() . '/assets/js/script.js',
-            array(),
-            YANDEXPRO_VERSION,
-            true
-        );
+        // Проверяем существование JavaScript файлов перед подключением
+        $script_path = get_template_directory() . '/assets/js/script.js';
+        if (file_exists($script_path)) {
+            wp_enqueue_script(
+                'yandexpro-script',
+                get_template_directory_uri() . '/assets/js/script.js',
+                array(),
+                YANDEXPRO_VERSION,
+                true
+            );
+            
+            // Локализация скриптов
+            wp_localize_script('yandexpro-script', 'yandexpro_vars', array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce'    => wp_create_nonce('yandexpro_nonce'),
+                'strings'  => array(
+                    'menu_toggle' => __('Toggle navigation', 'yandexpro'),
+                    'menu_close'  => __('Close navigation', 'yandexpro'),
+                    'search'      => __('Search', 'yandexpro'),
+                ),
+            ));
+        } else {
+            // Предупреждение для админов
+            if (current_user_can('manage_options') && defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('YandexPro: script.js not found at: ' . $script_path);
+            }
+        }
 
         // Navigation script
-        wp_enqueue_script(
-            'yandexpro-navigation',
-            get_template_directory_uri() . '/assets/js/navigation.js',
-            array(),
-            YANDEXPRO_VERSION,
-            true
-        );
-
-        // Localize script for AJAX and translations
-        wp_localize_script('yandexpro-script', 'yandexpro_vars', array(
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('yandexpro_nonce'),
-            'strings'  => array(
-                'menu_toggle' => __('Toggle navigation', 'yandexpro'),
-                'menu_close'  => __('Close navigation', 'yandexpro'),
-                'search'      => __('Search', 'yandexpro'),
-            ),
-        ));
+        $nav_script_path = get_template_directory() . '/assets/js/navigation.js';
+        if (file_exists($nav_script_path)) {
+            wp_enqueue_script(
+                'yandexpro-navigation',
+                get_template_directory_uri() . '/assets/js/navigation.js',
+                array(),
+                YANDEXPRO_VERSION,
+                true
+            );
+        } else {
+            // Предупреждение для админов
+            if (current_user_can('manage_options') && defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('YandexPro: navigation.js not found at: ' . $nav_script_path);
+            }
+        }
 
         // Comment reply script
         if (is_singular() && comments_open() && get_option('thread_comments')) {
@@ -208,373 +291,31 @@ add_action('wp_enqueue_scripts', 'yandexpro_scripts');
 
 /**
  * ========================================
- * ЗАГРУЗКА МОДУЛЕЙ (необязательные)
- * ========================================
- */
-
-// Пытаемся загрузить модули, но если их нет - работаем без них
-yandexpro_require_module('theme-setup', false);      // Расширенная настройка темы
-yandexpro_require_module('enqueue-scripts', false);  // Расширенное подключение ресурсов
-yandexpro_require_module('blog-categories', false);  // Функции управления категориями
-yandexpro_require_module('customizer', false);      // Настройки Customizer
-yandexpro_require_module('template-tags', false);   // Вспомогательные функции
-yandexpro_require_module('template-functions', false); // Функции шаблонов
-yandexpro_require_module('security', false);        // Безопасность
-yandexpro_require_module('performance', false);     // Оптимизация
-
-/**
- * ========================================
- * ВСТРОЕННЫЕ ФУНКЦИИ ДЛЯ СОВМЕСТИМОСТИ
+ * FALLBACK ФУНКЦИИ ДЛЯ МОДУЛЕЙ
  * ========================================
  */
 
 /**
- * Custom excerpt length
- */
-if (!function_exists('yandexpro_excerpt_length')) {
-    function yandexpro_excerpt_length($length) {
-        if (is_admin()) {
-            return $length;
-        }
-        return 30; // Default excerpt length
-    }
-}
-add_filter('excerpt_length', 'yandexpro_excerpt_length', 999);
-
-/**
- * Custom excerpt more string
- */
-if (!function_exists('yandexpro_excerpt_more')) {
-    function yandexpro_excerpt_more($more) {
-        if (is_admin()) {
-            return $more;
-        }
-        return '...';
-    }
-}
-add_filter('excerpt_more', 'yandexpro_excerpt_more');
-
-/**
- * Calculate reading time
- */
-if (!function_exists('yandexpro_reading_time')) {
-    function yandexpro_reading_time($post_id = null) {
-        if (!$post_id) {
-            $post_id = get_the_ID();
-        }
-        
-        $content = get_post_field('post_content', $post_id);
-        $word_count = str_word_count(strip_tags($content));
-        $reading_time = ceil($word_count / 200); // Average reading speed: 200 words per minute
-        
-        return $reading_time;
-    }
-}
-
-/**
- * Add security headers
- */
-if (!function_exists('yandexpro_security_headers')) {
-    function yandexpro_security_headers() {
-        if (!is_admin()) {
-            // Remove WordPress version from head and feeds
-            remove_action('wp_head', 'wp_generator');
-            
-            // Remove RSD link
-            remove_action('wp_head', 'rsd_link');
-            
-            // Remove wlwmanifest.xml
-            remove_action('wp_head', 'wlwmanifest_link');
-            
-            // Remove shortlink
-            remove_action('wp_head', 'wp_shortlink_wp_head');
-            
-            // Remove adjacent posts links
-            remove_action('wp_head', 'adjacent_posts_rel_link_wp_head');
-        }
-    }
-}
-add_action('init', 'yandexpro_security_headers');
-
-/**
- * Optimize images - add loading="lazy" and decoding="async"
- */
-if (!function_exists('yandexpro_add_image_attributes')) {
-    function yandexpro_add_image_attributes($attr, $attachment, $size) {
-        $attr['loading'] = 'lazy';
-        $attr['decoding'] = 'async';
-        return $attr;
-    }
-}
-add_filter('wp_get_attachment_image_attributes', 'yandexpro_add_image_attributes', 10, 3);
-
-/**
- * Add theme support for starter content
- */
-if (!function_exists('yandexpro_starter_content')) {
-    function yandexpro_starter_content() {
-        add_theme_support('starter-content', array(
-            'widgets' => array(
-                'sidebar-1' => array(
-                    'search',
-                    'recent-posts',
-                    'archives',
-                ),
-                'footer-1' => array(
-                    'text_about',
-                ),
-            ),
-            'posts' => array(
-                'home' => array(
-                    'post_title' => __('Welcome to YandexPro', 'yandexpro'),
-                    'post_content' => __('This is your homepage. You can customize it from the WordPress admin panel.', 'yandexpro'),
-                ),
-                'about' => array(
-                    'post_title' => __('About Us', 'yandexpro'),
-                    'post_content' => __('Tell your visitors about yourself and your website.', 'yandexpro'),
-                ),
-                'contact' => array(
-                    'post_title' => __('Contact', 'yandexpro'),
-                    'post_content' => __('Get in touch with us.', 'yandexpro'),
-                ),
-                'blog' => array(
-                    'post_title' => __('Blog', 'yandexpro'),
-                    'post_content' => __('This is your blog page.', 'yandexpro'),
-                ),
-            ),
-            'nav_menus' => array(
-                'primary' => array(
-                    'name' => __('Primary Menu', 'yandexpro'),
-                    'items' => array(
-                        'page_home',
-                        'page_about',
-                        'page_blog',
-                        'page_contact',
-                    ),
-                ),
-            ),
-            'options' => array(
-                'show_on_front'  => 'page',
-                'page_on_front'  => '{{home}}',
-                'page_for_posts' => '{{blog}}',
-            ),
-        ));
-    }
-}
-add_action('after_setup_theme', 'yandexpro_starter_content');
-
-/**
- * Page templates registration
- */
-if (!function_exists('yandexpro_add_page_templates')) {
-    function yandexpro_add_page_templates($templates) {
-        $templates['page-templates/page-landing.php'] = __('Landing Page', 'yandexpro');
-        $templates['page-templates/page-blog-modern.php'] = __('Modern Blog Page', 'yandexpro');
-        $templates['page-templates/page-contact.php'] = __('Contact Page', 'yandexpro');
-        return $templates;
-    }
-}
-add_filter('theme_page_templates', 'yandexpro_add_page_templates');
-
-/**
- * Disable emoji scripts (performance optimization)
- */
-if (!function_exists('yandexpro_disable_emojis')) {
-    function yandexpro_disable_emojis() {
-        remove_action('wp_head', 'print_emoji_detection_script', 7);
-        remove_action('admin_print_scripts', 'print_emoji_detection_script');
-        remove_action('wp_print_styles', 'print_emoji_styles');
-        remove_action('admin_print_styles', 'print_emoji_styles');
-        remove_filter('the_content_feed', 'wp_staticize_emoji');
-        remove_filter('comment_text_rss', 'wp_staticize_emoji');
-        remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
-    }
-}
-add_action('init', 'yandexpro_disable_emojis');
-
-/**
- * Theme customization options (basic)
- */
-if (!function_exists('yandexpro_get_theme_option')) {
-    function yandexpro_get_theme_option($option, $default = '') {
-        return get_theme_mod($option, $default);
-    }
-}
-
-/**
- * Add body classes
- */
-if (!function_exists('yandexpro_body_classes')) {
-    function yandexpro_body_classes($classes) {
-        // Add class for theme version
-        $classes[] = 'yandexpro-theme';
-        
-        // Add class if sidebar is active
-        if (is_active_sidebar('sidebar-1')) {
-            $classes[] = 'has-sidebar';
-        } else {
-            $classes[] = 'no-sidebar';
-        }
-        
-        // Add class for dark theme if enabled
-        if (yandexpro_get_theme_option('enable_dark_theme', false)) {
-            $classes[] = 'has-dark-theme-option';
-        }
-        
-        return $classes;
-    }
-}
-add_filter('body_class', 'yandexpro_body_classes');
-
-/**
- * Breadcrumbs function
- */
-if (!function_exists('yandexpro_breadcrumbs')) {
-    function yandexpro_breadcrumbs() {
-        if (is_front_page()) {
-            return;
-        }
-        
-        echo '<nav class="breadcrumbs" aria-label="' . esc_attr__('Breadcrumb', 'yandexpro') . '">';
-        echo '<a href="' . esc_url(home_url('/')) . '">' . esc_html__('Home', 'yandexpro') . '</a>';
-        
-        if (is_category() || is_single()) {
-            echo ' → ';
-            the_category(' → ');
-            if (is_single()) {
-                echo ' → ';
-                the_title();
-            }
-        } elseif (is_page()) {
-            echo ' → ';
-            the_title();
-        }
-        
-        echo '</nav>';
-    }
-}
-
-/**
- * ========================================
- * ФУНКЦИИ КАТЕГОРИЙ БЛОГА (ВСТРОЕННЫЕ)
- * ========================================
- */
-
-/**
- * Настройки Customizer для категорий (fallback)
- */
-if (!function_exists('yandexpro_customize_featured_categories')) {
-    function yandexpro_customize_featured_categories($wp_customize) {
-        
-        // Добавляем секцию для настроек блога
-        $wp_customize->add_section('yandexpro_blog_settings', array(
-            'title'    => __('Настройки блога', 'yandexpro'),
-            'priority' => 35,
-            'description' => __('Выберите категории для отображения в навигации блога', 'yandexpro'),
-        ));
-        
-        // Получаем все категории
-        $categories = get_categories(array(
-            'hide_empty' => false,
-            'exclude'    => array(1), // Исключаем "Без рубрики"
-            'orderby'    => 'name',
-            'order'      => 'ASC',
-        ));
-        
-        // Создаем отдельный чекбокс для каждой категории
-        foreach ($categories as $category) {
-            
-            // Настройка для каждой категории
-            $wp_customize->add_setting('yandexpro_show_category_' . $category->term_id, array(
-                'default'           => false,
-                'sanitize_callback' => 'wp_validate_boolean',
-                'transport'         => 'refresh',
-            ));
-            
-            // Контрол чекбокс для каждой категории
-            $wp_customize->add_control('yandexpro_show_category_' . $category->term_id, array(
-                'label'   => $category->name . ' (' . $category->count . ' постов)',
-                'section' => 'yandexpro_blog_settings',
-                'type'    => 'checkbox',
-            ));
-        }
-        
-        // Дополнительная настройка: максимальное количество категорий
-        $wp_customize->add_setting('yandexpro_max_categories', array(
-            'default'           => 8,
-            'sanitize_callback' => 'absint',
-            'transport'         => 'refresh',
-        ));
-        
-        $wp_customize->add_control('yandexpro_max_categories_control', array(
-            'label'       => __('Максимум категорий', 'yandexpro'),
-            'description' => __('Максимальное количество категорий для отображения (от 4 до 12)', 'yandexpro'),
-            'section'     => 'yandexpro_blog_settings',
-            'settings'    => 'yandexpro_max_categories',
-            'type'        => 'number',
-            'input_attrs' => array(
-                'min'  => 4,
-                'max'  => 12,
-                'step' => 1,
-            ),
-        ));
-    }
-}
-add_action('customize_register', 'yandexpro_customize_featured_categories');
-
-/**
- * Получаем избранные категории для отображения (fallback)
+ * Получение избранных категорий (fallback для blog-categories модуля)
  */
 if (!function_exists('yandexpro_get_featured_categories')) {
-    function yandexpro_get_featured_categories() {
-        $max_categories = get_theme_mod('yandexpro_max_categories', 8);
+    function yandexpro_get_featured_categories($max_categories = 6) {
         $selected_categories = array();
         
-        // Получаем все категории
-        $all_categories = get_categories(array(
-            'hide_empty' => false,
+        // Автоматический выбор топ категорий
+        $auto_categories = get_categories(array(
+            'orderby'    => 'count',
+            'order'      => 'DESC',
+            'number'     => $max_categories,
+            'hide_empty' => true,
             'exclude'    => array(1), // Исключаем "Без рубрики"
-            'orderby'    => 'name',
-            'order'      => 'ASC',
         ));
         
-        // Проверяем какие категории выбраны через чекбоксы
-        foreach ($all_categories as $category) {
-            $is_selected = get_theme_mod('yandexpro_show_category_' . $category->term_id, false);
-            if ($is_selected) {
-                $selected_categories[] = $category->term_id;
-            }
-        }
-        
-        // Если ничего не выбрано, показываем топ категории автоматически
-        if (empty($selected_categories)) {
-            $auto_categories = get_categories(array(
-                'orderby'    => 'count',
-                'order'      => 'DESC',
-                'number'     => $max_categories,
-                'hide_empty' => true,
-                'exclude'    => array(1), // Исключаем "Без рубрики"
-            ));
-            
-            foreach ($auto_categories as $category) {
-                $selected_categories[] = $category->term_id;
-            }
-        } else {
-            // Ограничиваем количество выбранных категорий
-            $selected_categories = array_slice($selected_categories, 0, $max_categories);
+        foreach ($auto_categories as $category) {
+            $selected_categories[] = $category->term_id;
         }
         
         return $selected_categories;
-    }
-}
-
-/**
- * Получаем скрытые категории (fallback)
- */
-if (!function_exists('yandexpro_get_hidden_categories')) {
-    function yandexpro_get_hidden_categories() {
-        // Простая заглушка - возвращаем пустой массив
-        return array();
     }
 }
 
@@ -588,54 +329,125 @@ if (!function_exists('yandexpro_is_category_active')) {
 }
 
 /**
- * ========================================
- * ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ МОДУЛЕЙ
- * ========================================
+ * Получение информации о категории (fallback)
  */
-
-/**
- * Быстрое подключение стилей блога
- */
-if (!function_exists('yandexpro_enqueue_blog_styles')) {
-    function yandexpro_enqueue_blog_styles() {
-        // Заглушка для совместимости
+if (!function_exists('yandexpro_get_category_info')) {
+    function yandexpro_get_category_info($category_id) {
+        $category = get_category($category_id);
+        
+        if (!$category || is_wp_error($category)) {
+            return false;
+        }
+        
+        return array(
+            'id'          => $category->term_id,
+            'name'        => $category->name,
+            'slug'        => $category->slug,
+            'description' => $category->description,
+            'count'       => $category->count,
+            'link'        => get_category_link($category_id),
+            'is_active'   => yandexpro_is_category_active($category_id),
+        );
     }
 }
 
 /**
- * Быстрое подключение скриптов блога
+ * ========================================
+ * ДОПОЛНИТЕЛЬНЫЕ СИСТЕМЫ
+ * ========================================
  */
-if (!function_exists('yandexpro_enqueue_blog_scripts')) {
-    function yandexpro_enqueue_blog_scripts() {
-        // Заглушка для совместимости
+
+/**
+ * Page templates registration
+ */
+if (!function_exists('yandexpro_add_page_templates')) {
+    function yandexpro_add_page_templates($templates) {
+        $page_templates = array(
+            'page-templates/page-landing.php'     => __('Landing Page', 'yandexpro'),
+            'page-templates/page-blog-modern.php' => __('Modern Blog Page', 'yandexpro'),
+            'page-templates/contact.php'          => __('Contact Page', 'yandexpro'),
+            'page-templates/landing.php'          => __('Simple Landing', 'yandexpro'),
+        );
+        
+        return array_merge($templates, $page_templates);
     }
 }
+add_filter('theme_page_templates', 'yandexpro_add_page_templates');
 
 /**
  * ========================================
- * ФИНАЛЬНАЯ ИНИЦИАЛИЗАЦИЯ
+ * ОТЛАДКА И МОНИТОРИНГ
  * ========================================
  */
 
-// Загрузка дополнительных файлов (только если существуют)
-$inc_files = array(
-    'inc/customizer.php',
-    'inc/template-tags.php', 
-    'inc/template-functions.php',
-);
-
-foreach ($inc_files as $file) {
-    $filepath = get_template_directory() . '/' . $file;
-    if (file_exists($filepath)) {
-        require $filepath;
-    }
-}
-
-// Информация для отладки
+// Информация для отладки (только в DEBUG режиме)
 if (defined('WP_DEBUG') && WP_DEBUG) {
     add_action('wp_footer', function() {
         if (current_user_can('manage_options')) {
-            echo "<!-- YandexPro Modular Theme Loaded. Modules directory: " . (is_dir(YANDEXPRO_INC_DIR) ? 'exists' : 'missing') . " -->\n";
+            echo "<!-- YandexPro Enhanced Debug Info:\n";
+            echo "Version: " . YANDEXPRO_VERSION . "\n";
+            echo "Modules directory: " . (is_dir(YANDEXPRO_INC_DIR) ? 'exists' : 'MISSING') . "\n";
+            echo "Theme setup function: " . (function_exists('yandexpro_setup') ? 'loaded' : 'missing') . "\n";
+            echo "Customizer function: " . (function_exists('yandexpro_customize_register') ? 'loaded' : 'fallback') . "\n";
+            echo "Template tags: " . (function_exists('yandexpro_posted_on') ? 'loaded' : 'fallback') . "\n";
+            echo "Blog categories: " . (function_exists('yandexpro_get_featured_categories') ? 'loaded' : 'fallback') . "\n";
+            echo "-->\n";
+        }
+    });
+    
+    // Проверка критических файлов
+    add_action('wp_head', function() {
+        if (current_user_can('manage_options')) {
+            $critical_files = array(
+                '/assets/js/script.js',
+                '/assets/js/navigation.js',
+                '/inc/theme-setup.php',
+                '/inc/enqueue-scripts.php',
+            );
+            
+            foreach ($critical_files as $file) {
+                $file_path = get_template_directory() . $file;
+                if (!file_exists($file_path)) {
+                    echo "<!-- YandexPro WARNING: Missing critical file {$file} -->\n";
+                }
+            }
         }
     });
 }
+
+/**
+ * ========================================
+ * ХУКИ ДЛЯ РАСШИРЕНИЯ
+ * ========================================
+ */
+
+// Позволяем другим модулям/плагинам добавлять свои хуки
+do_action('yandexpro_after_setup');
+
+// Финальная проверка готовности темы
+add_action('wp_loaded', function() {
+    if (defined('WP_DEBUG') && WP_DEBUG && current_user_can('manage_options')) {
+        $theme_ready = true;
+        $missing_functions = array();
+        
+        // Проверяем критические функции
+        $critical_functions = array(
+            'yandexpro_setup',
+            'yandexpro_scripts',
+            'yandexpro_get_theme_option',
+        );
+        
+        foreach ($critical_functions as $func) {
+            if (!function_exists($func)) {
+                $theme_ready = false;
+                $missing_functions[] = $func;
+            }
+        }
+        
+        if (!$theme_ready) {
+            error_log('YandexPro: Theme not fully ready. Missing functions: ' . implode(', ', $missing_functions));
+        } else {
+            error_log('YandexPro: Theme successfully initialized with modular architecture');
+        }
+    }
+});
