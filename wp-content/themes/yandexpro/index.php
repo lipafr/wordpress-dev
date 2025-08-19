@@ -1,6 +1,7 @@
 <?php
 /**
- * The main template file - FINAL VERSION
+ * The main template file
+ * ПОЛНАЯ РАБОЧАЯ ВЕРСИЯ
  *
  * @package YandexPro
  */
@@ -12,9 +13,7 @@ get_header(); ?>
     <div class="container">
         <div class="featured-grid">
             <article class="featured-main">
-                <div class="featured-image" style="background: linear-gradient(135deg, #ff6b6b, #4ecdc4); width: 300px; height: 200px; border-radius: 12px; margin-bottom: 16px;">
-                    <!-- Заглушка вместо изображения -->
-                </div>
+                <div class="featured-image"></div>
                 <div class="featured-content">
                     <div class="featured-meta">
                         <span>📅 15 авг 2025</span>
@@ -276,13 +275,12 @@ get_header(); ?>
     <div class="container">
         <h2>Не пропустите новые статьи</h2>
         <p>Подпишитесь на рассылку и получайте лучшие материалы о контекстной рекламе</p>
-        <form class="newsletter-form" method="post" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>">
-            <?php wp_nonce_field('yandexpro_newsletter_nonce', 'newsletter_nonce'); ?>
-            <input type="hidden" name="action" value="yandexpro_newsletter_subscribe">
+        <form class="newsletter-form" method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+            <?php wp_nonce_field('yandexpro_newsletter', 'newsletter_nonce'); ?>
+            <input type="hidden" name="action" value="yandexpro_newsletter">
             <input type="email" class="newsletter-input" name="email" placeholder="Ваш email" required>
             <button type="submit" class="newsletter-btn">Подписаться</button>
         </form>
-        <div id="newsletter-message"></div>
     </div>
 </section>
 

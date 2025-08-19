@@ -1,7 +1,7 @@
 <?php
 /**
- * YandexPro Enhanced Theme Functions
- * Модульная WordPress тема для блога о Яндекс Директ
+ * YandexPro WordPress Theme Functions
+ * ПОЛНАЯ РАБОЧАЯ ВЕРСИЯ
  *
  * @package YandexPro
  * @since 1.0.0
@@ -16,39 +16,15 @@ if (!defined('ABSPATH')) {
 define('YANDEXPRO_VERSION', '1.0.0');
 define('YANDEXPRO_DIR', get_template_directory());
 define('YANDEXPRO_URL', get_template_directory_uri());
-define('YANDEXPRO_INC_DIR', YANDEXPRO_DIR . '/inc');
 
 /**
- * Модульная система загрузки
- * Начинаем с критически важных модулей
+ * Настройка темы после активации
  */
-function yandexpro_load_modules() {
-    $modules = [
-        'setup',             // Базовые настройки темы (первый!)
-        'enqueue',           // Подключение CSS/JS (второй!)
-        'template-functions', // Вспомогательные функции
-        'newsletter'         // Newsletter функциональность
-    ];
-    
-    foreach ($modules as $module) {
-        $file = YANDEXPRO_INC_DIR . '/' . $module . '.php';
-        if (file_exists($file)) {
-            require_once $file;
-        }
-    }
-}
-
-// Загружаем модули
-yandexpro_load_modules();
-
-/**
- * После активации темы
- */
-function yandexpro_after_setup_theme() {
-    // Включаем поддержку переводов
+function yandexpro_setup() {
+    // Поддержка переводов
     load_theme_textdomain('yandexpro', YANDEXPRO_DIR . '/languages');
     
-    // Автоматические фиды
+    // Автоматические RSS фиды
     add_theme_support('automatic-feed-links');
     
     // Title tag поддержка
@@ -60,7 +36,7 @@ function yandexpro_after_setup_theme() {
     // HTML5 разметка
     add_theme_support('html5', [
         'search-form',
-        'comment-form', 
+        'comment-form',
         'comment-list',
         'gallery',
         'caption',
@@ -68,101 +44,197 @@ function yandexpro_after_setup_theme() {
         'script'
     ]);
     
-    // Размеры изображений для блога
-    add_image_size('yandexpro-featured', 400, 240, true);      // Главная статья
-    add_image_size('yandexpro-small', 80, 80, true);           // Боковые статьи
-    add_image_size('yandexpro-card', 300, 180, true);          // Карточки статей
+    // Размеры изображений
+    add_image_size('yandexpro-featured', 400, 240, true);
+    add_image_size('yandexpro-small', 80, 80, true);
+    add_image_size('yandexpro-card', 300, 180, true);
+    
+    // Регистрация меню
+    register_nav_menus([
+        'primary' => __('Основное меню', 'yandexpro'),
+        'footer'  => __('Меню в футере', 'yandexpro'),
+    ]);
 }
-add_action('after_setup_theme', 'yandexpro_after_setup_theme');
+add_action('after_setup_theme', 'yandexpro_setup');
 
 /**
- * Максимальная ширина контента (из макета)
+ * Подключение стилей и скриптов
+ */
+function yandexpro_enqueue_assets() {
+    // Google Fonts
+    wp_enqueue_style(
+        'yandexpro-fonts',
+        'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap',
+        [],
+        null
+    );
+    
+    // Основные стили темы
+    wp_enqueue_style(
+        'yandexpro-style',
+        get_stylesheet_uri(),
+        ['yandexpro-fonts'],
+        YANDEXPRO_VERSION
+    );
+    
+    // Основной скрипт
+    wp_enqueue_script(
+        'yandexpro-script',
+        YANDEXPRO_URL . '/assets/js/script.js',
+        [],
+        YANDEXPRO_VERSION,
+        true
+    );
+    
+    // Локализация для AJAX
+    wp_localize_script('yandexpro-script', 'yandexpro_ajax', [
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('yandexpro_nonce')
+    ]);
+}
+add_action('wp_enqueue_scripts', 'yandexpro_enqueue_assets');
+
+/**
+ * Регистрация областей виджетов
+ */
+function yandexpro_widgets_init() {
+    // Сайдбар
+    register_sidebar([
+        'name'          => __('Сайдбар', 'yandexpro'),
+        'id'            => 'sidebar-1',
+        'description'   => __('Основной сайдбар', 'yandexpro'),
+        'before_widget' => '<section id="%1$s" class="widget %2$s">',
+        'after_widget'  => '</section>',
+        'before_title'  => '<h3 class="widget-title">',
+        'after_title'   => '</h3>',
+    ]);
+    
+    // Футер виджеты
+    for ($i = 1; $i <= 3; $i++) {
+        register_sidebar([
+            'name'          => sprintf(__('Футер %d', 'yandexpro'), $i),
+            'id'            => 'footer-' . $i,
+            'before_widget' => '<div class="footer-widget">',
+            'after_widget'  => '</div>',
+            'before_title'  => '<h3 class="footer-title">',
+            'after_title'   => '</h3>',
+        ]);
+    }
+}
+add_action('widgets_init', 'yandexpro_widgets_init');
+
+/**
+ * Обработка формы подписки на newsletter
+ */
+function yandexpro_newsletter_handler() {
+    // Проверка nonce
+    if (!isset($_POST['newsletter_nonce']) || 
+        !wp_verify_nonce($_POST['newsletter_nonce'], 'yandexpro_newsletter')) {
+        wp_die('Ошибка безопасности');
+    }
+    
+    $email = sanitize_email($_POST['email']);
+    
+    if (!is_email($email)) {
+        wp_redirect(add_query_arg('newsletter', 'error', wp_get_referer()));
+        exit;
+    }
+    
+    // Сохраняем email (простая реализация)
+    $subscribers = get_option('yandexpro_subscribers', []);
+    if (!in_array($email, $subscribers)) {
+        $subscribers[] = $email;
+        update_option('yandexpro_subscribers', $subscribers);
+    }
+    
+    wp_redirect(add_query_arg('newsletter', 'success', wp_get_referer()));
+    exit;
+}
+add_action('admin_post_yandexpro_newsletter', 'yandexpro_newsletter_handler');
+add_action('admin_post_nopriv_yandexpro_newsletter', 'yandexpro_newsletter_handler');
+
+/**
+ * Показ сообщений newsletter
+ */
+function yandexpro_newsletter_messages() {
+    if (!isset($_GET['newsletter'])) return;
+    
+    $message = '';
+    switch ($_GET['newsletter']) {
+        case 'success':
+            $message = 'Спасибо за подписку!';
+            break;
+        case 'error':
+            $message = 'Ошибка при подписке';
+            break;
+    }
+    
+    if ($message) {
+        echo '<div class="newsletter-message">' . esc_html($message) . '</div>';
+    }
+}
+add_action('wp_footer', 'yandexpro_newsletter_messages');
+
+/**
+ * ОТКЛЮЧЕНИЕ КЕША ДЛЯ РАЗРАБОТКИ
+ */
+function yandexpro_disable_cache() {
+    // Отключаем WordPress кеш
+    wp_cache_flush();
+    
+    // Добавляем timestamp к файлам
+    add_filter('style_loader_src', function($src) {
+        return add_query_arg('ver', time(), remove_query_arg('ver', $src));
+    });
+    
+    add_filter('script_loader_src', function($src) {
+        return add_query_arg('ver', time(), remove_query_arg('ver', $src));
+    });
+}
+add_action('init', 'yandexpro_disable_cache');
+
+/**
+ * Очистка всех кешей при активации темы
+ */
+function yandexpro_flush_cache() {
+    wp_cache_flush();
+    flush_rewrite_rules();
+}
+add_action('after_switch_theme', 'yandexpro_flush_cache');
+
+/**
+ * Максимальная ширина контента
  */
 if (!isset($content_width)) {
     $content_width = 1200;
 }
 
-<?php
-// ДОБАВИТЬ В КОНЕЦ functions.php ДЛЯ ОТКЛЮЧЕНИЯ КЕША
-
 /**
- * Отключение кеша для разработки
+ * Дебаг информация для разработки
  */
-function yandexpro_disable_cache_dev() {
-    if (!defined('WP_DEBUG') || !WP_DEBUG) {
-        return; // Работает только при включенном WP_DEBUG
-    }
-    
-    // Отключаем WordPress кеш
-    if (!defined('WP_CACHE')) {
-        define('WP_CACHE', false);
-    }
-    
-    // Принудительная перезагрузка файлов
-    add_filter('style_loader_src', 'yandexpro_remove_cache_version', 10, 2);
-    add_filter('script_loader_src', 'yandexpro_remove_cache_version', 10, 2);
-}
-add_action('init', 'yandexpro_disable_cache_dev', 1);
-
-/**
- * Добавляет timestamp к CSS/JS для принудительной перезагрузки
- */
-function yandexpro_remove_cache_version($src, $handle) {
-    if (strpos($src, '?ver=') !== false) {
-        $src = remove_query_arg('ver', $src);
-    }
-    
-    // Добавляем текущее время для принудительного обновления
-    $src = add_query_arg('bust', time(), $src);
-    
-    return $src;
-}
-
-/**
- * Очистка всех кешей WordPress
- */
-function yandexpro_flush_all_cache() {
-    // Очищаем объектный кеш
-    wp_cache_flush();
-    
-    // Очищаем кеш базы данных
-    if (function_exists('wp_cache_delete_group')) {
-        wp_cache_delete_group('posts');
-        wp_cache_delete_group('options');
-        wp_cache_delete_group('themes');
-    }
-    
-    // Очищаем кеш ревизий
-    wp_suspend_cache_addition(true);
-    wp_suspend_cache_invalidation(true);
-}
-
-// Очищаем кеш при каждом обновлении темы
-add_action('switch_theme', 'yandexpro_flush_all_cache');
-add_action('after_switch_theme', 'yandexpro_flush_all_cache');
-
-/**
- * ЭКСТРЕННАЯ ФУНКЦИЯ - принудительная загрузка нового index.php
- */
-function yandexpro_force_template_refresh() {
-    // Убираем из кеша все шаблоны
-    wp_cache_delete('get_template_directory', 'options');
-    wp_cache_delete('stylesheet_directory', 'options');
-    
-    // Принудительно обновляем файлы темы
-    if (function_exists('wp_cache_delete')) {
-        wp_cache_delete('theme_roots', 'options');
-        wp_cache_delete('theme_files', 'options');
-    }
-}
-add_action('wp_loaded', 'yandexpro_force_template_refresh');
-
-// ДЕБАГ информация - показывает какой файл загружается
-function yandexpro_debug_template() {
+function yandexpro_debug_info() {
     if (current_user_can('administrator')) {
-        global $template;
-        echo '<script>console.log("Template loaded: ' . basename($template) . '");</script>';
-        echo '<script>console.log("Theme path: ' . get_template_directory() . '");</script>';
+        echo '<script>console.log("YandexPro Theme: Loaded successfully!");</script>';
+        echo '<script>console.log("Template: ' . basename(get_page_template()) . '");</script>';
     }
 }
-add_action('wp_footer', 'yandexpro_debug_template');
+add_action('wp_footer', 'yandexpro_debug_info');
+
+/**
+ * Добавляем favicon
+ */
+function yandexpro_favicon() {
+    echo '<link rel="icon" href="data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><text y=\'0.9em\' font-size=\'90\'>📊</text></svg>">';
+}
+add_action('wp_head', 'yandexpro_favicon');
+
+/**
+ * Безопасность - убираем версию WordPress
+ */
+remove_action('wp_head', 'wp_generator');
+
+/**
+ * Отключаем emoji для производительности
+ */
+remove_action('wp_head', 'print_emoji_detection_script', 7);
+remove_action('wp_print_styles', 'print_emoji_styles');

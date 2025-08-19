@@ -1,324 +1,267 @@
 /*
 Theme Name: YandexPro
-Theme URI: https://your-site.com
-Description: WordPress тема для блога о Яндекс Директ и интернет-маркетинге
-Author: Your Name
 Version: 1.0.0
-Text Domain: yandexpro
 */
 
-/* ==========================================================================
-   CSS Variables (Design System from Mockup)
-   ========================================================================== */
-
-:root {
-    /* Colors from original mockup */
-    --yandexpro-primary: #7c3aed;
-    --yandexpro-accent: #ec4899;
-    --yandexpro-white: #ffffff;
-    --yandexpro-black: #111827;
-    --yandexpro-light: #f8fafc;
-    --yandexpro-secondary: #64748b;
-    
-    /* Typography */
-    --yandexpro-font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
-    
-    /* Layout */
-    --yandexpro-container-width: 1200px;
-    --yandexpro-border-radius-large: 16px;
-    
-    /* Effects */
-    --yandexpro-transition: all 0.3s ease;
-    --yandexpro-shadow-light: 0 2px 8px rgba(0, 0, 0, 0.06);
-    --yandexpro-shadow-heavy: 0 8px 24px rgba(0, 0, 0, 0.12);
-}
-
-/* ==========================================================================
-   Reset and Base Styles
-   ========================================================================== */
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* ПРИНУДИТЕЛЬНЫЕ СТИЛИ */
+* { margin: 0 !important; padding: 0 !important; box-sizing: border-box !important; }
 
 body {
-    font-family: var(--yandexpro-font-family);
-    line-height: 1.6;
-    color: var(--yandexpro-black);
-    background: var(--yandexpro-white);
-    font-weight: 400;
+    font-family: 'Space Grotesk', Arial, sans-serif !important;
+    line-height: 1.6 !important;
+    color: #111827 !important;
+    background: #ffffff !important;
 }
 
 .container {
-    max-width: var(--yandexpro-container-width);
-    margin: 0 auto;
-    padding: 0 24px;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 0 24px !important;
 }
 
-/* ==========================================================================
-   Header EMERGENCY STYLES
-   ========================================================================== */
-
+/* HEADER */
 .site-header {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(17, 24, 39, 0.08);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    transition: var(--yandexpro-transition);
+    background: rgba(255, 255, 255, 0.9) !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1000 !important;
+    border-bottom: 1px solid #e2e8f0 !important;
 }
 
 .nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 0;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 20px 0 !important;
 }
 
 .site-logo {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--yandexpro-black);
-    text-decoration: none;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    text-decoration: none !important;
 }
 
-.nav-menu {
-    display: flex;
-    list-style: none;
-    gap: 40px;
-}
-
-.nav-menu a {
-    text-decoration: none;
-    color: var(--yandexpro-black);
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
-
-.nav-menu a:hover,
-.nav-menu a.active {
-    color: var(--yandexpro-primary);
-}
-
-/* ==========================================================================
-   Hero Section EMERGENCY STYLES
-   ========================================================================== */
-
+/* HERO */
 .hero {
-    padding: 120px 0 80px;
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-content {
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto;
-    position: relative;
+    padding: 120px 0 80px !important;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    text-align: center !important;
 }
 
 .hero h1 {
-    font-size: clamp(42px, 6vw, 64px);
-    font-weight: 800;
-    line-height: 1.1;
-    margin-bottom: 24px;
-    color: var(--yandexpro-black);
-    letter-spacing: -0.02em;
+    font-size: 48px !important;
+    font-weight: 800 !important;
+    margin-bottom: 24px !important;
+    color: #111827 !important;
 }
 
 .gradient-text {
-    background: linear-gradient(135deg, #7c3aed, #ec4899);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    background: linear-gradient(135deg, #7c3aed, #ec4899) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
 }
 
 .hero p {
-    font-size: 22px;
-    color: var(--yandexpro-secondary);
-    margin-bottom: 40px;
-    line-height: 1.5;
-}
-
-/* ==========================================================================
-   Search Box EMERGENCY STYLES
-   ========================================================================== */
-
-.search-container {
-    max-width: 500px;
-    margin: 0 auto;
-    position: relative;
+    font-size: 20px !important;
+    color: #64748b !important;
+    margin-bottom: 40px !important;
 }
 
 .search-box {
-    width: 100%;
-    padding: 18px 24px 18px 56px;
-    font-size: 16px;
-    border: 2px solid #e2e8f0;
-    border-radius: 50px;
-    background: white;
-    outline: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    width: 100% !important;
+    max-width: 500px !important;
+    padding: 18px 24px !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 50px !important;
+    font-size: 16px !important;
+    margin: 0 auto !important;
+    display: block !important;
 }
 
-.search-box:focus {
-    border-color: var(--yandexpro-primary);
-    box-shadow: 0 8px 30px rgba(124, 58, 237, 0.15);
+/* СЕКЦИИ */
+.featured-articles, .categories, .latest {
+    background: #f8fafc !important;
+    padding: 60px 0 !important;
 }
 
-.search-icon {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 20px;
-    color: #9ca3af;
+.section-title, .categories-title {
+    font-size: 32px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    margin-bottom: 40px !important;
 }
 
-/* ==========================================================================
-   Sections EMERGENCY STYLES
-   ========================================================================== */
-
-.featured-articles,
-.categories,
-.latest {
-    padding: 80px 0 20px;
-    background: var(--yandexpro-light);
+/* FEATURED GRID */
+.featured-grid {
+    display: grid !important;
+    grid-template-columns: 2fr 1fr !important;
+    gap: 40px !important;
 }
 
-.section-title {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--yandexpro-black);
-    margin-bottom: 40px;
-    letter-spacing: -0.02em;
+.featured-main {
+    background: white !important;
+    border-radius: 16px !important;
+    padding: 24px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
 }
 
-/* ==========================================================================
-   Articles Grid EMERGENCY STYLES
-   ========================================================================== */
+.featured-title {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    margin-bottom: 16px !important;
+}
 
+.featured-sidebar {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+}
+
+.featured-small {
+    background: white !important;
+    border-radius: 12px !important;
+    padding: 16px !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1) !important;
+}
+
+/* КАТЕГОРИИ */
+.categories-list {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 16px !important;
+}
+
+.category-tag {
+    padding: 12px 24px !important;
+    background: white !important;
+    color: #475569 !important;
+    text-decoration: none !important;
+    border-radius: 50px !important;
+    font-weight: 500 !important;
+}
+
+.category-tag.active, .category-tag:hover {
+    background: #7c3aed !important;
+    color: white !important;
+}
+
+/* СЕТКА СТАТЕЙ */
 .articles-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    margin-bottom: 40px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 24px !important;
 }
 
 .articles-row {
-    display: grid;
-    gap: 24px;
+    display: grid !important;
+    gap: 24px !important;
 }
 
 .articles-row.row-3 {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr) !important;
 }
 
 .articles-row.row-2 {
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 2fr 1fr !important;
 }
 
 .article-card {
-    background: white;
-    border-radius: var(--yandexpro-border-radius-large);
-    overflow: hidden;
-    box-shadow: var(--yandexpro-shadow-light);
-    transition: var(--yandexpro-transition);
-    border: 1px solid #e2e8f0;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    height: 480px;
-}
-
-.article-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--yandexpro-shadow-heavy);
+    background: white !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+    height: 400px !important;
+    display: flex !important;
+    flex-direction: column !important;
 }
 
 .article-image {
-    height: 240px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
+    height: 200px !important;
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    position: relative !important;
+}
+
+.article-category {
+    position: absolute !important;
+    top: 12px !important;
+    left: 12px !important;
+    background: rgba(255,255,255,0.9) !important;
+    color: #7c3aed !important;
+    padding: 4px 10px !important;
+    border-radius: 12px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
 }
 
 .article-content {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    height: 240px;
+    padding: 20px !important;
+    flex: 1 !important;
 }
 
 .article-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--yandexpro-black);
-    margin-bottom: 12px;
-    line-height: 1.4;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    margin-bottom: 12px !important;
 }
 
-/* ==========================================================================
-   Newsletter EMERGENCY STYLES
-   ========================================================================== */
-
+/* NEWSLETTER */
 .newsletter {
-    padding: 80px 0;
-    background: linear-gradient(135deg, #7c3aed, #ec4899);
-    color: white;
-    text-align: center;
+    background: linear-gradient(135deg, #7c3aed, #ec4899) !important;
+    color: white !important;
+    text-align: center !important;
+    padding: 80px 0 !important;
 }
 
 .newsletter h2 {
-    font-size: 36px;
-    font-weight: 800;
-    margin-bottom: 16px;
+    font-size: 36px !important;
+    font-weight: 800 !important;
+    margin-bottom: 16px !important;
 }
 
-.newsletter p {
-    font-size: 18px;
-    margin-bottom: 40px;
-    opacity: 0.9;
+.newsletter-form {
+    display: flex !important;
+    gap: 16px !important;
+    max-width: 500px !important;
+    margin: 0 auto !important;
 }
 
-/* ==========================================================================
-   Footer EMERGENCY STYLES
-   ========================================================================== */
-
-.footer {
-    background: var(--yandexpro-black);
-    color: #d1d5db;
-    padding: 60px 0 0;
+.newsletter-input {
+    flex: 1 !important;
+    padding: 16px 20px !important;
+    border: none !important;
+    border-radius: 50px !important;
 }
 
-/* ==========================================================================
-   Mobile Responsive EMERGENCY STYLES
-   ========================================================================== */
+.newsletter-btn {
+    background: white !important;
+    color: #7c3aed !important;
+    padding: 16px 32px !important;
+    border: none !important;
+    border-radius: 50px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+}
 
-@media screen and (max-width: 768px) {
-    .nav-menu {
-        display: none;
-    }
-    
-    .hero h1 {
-        font-size: 36px;
-    }
-    
-    .articles-row.row-3,
-    .articles-row.row-2 {
+/* FOOTER */
+.site-footer {
+    background: #111827 !important;
+    color: #d1d5db !important;
+    padding: 60px 0 !important;
+}
+
+/* МОБИЛЬНАЯ АДАПТАЦИЯ */
+@media (max-width: 768px) {
+    .articles-row.row-3, .articles-row.row-2 {
         grid-template-columns: 1fr !important;
     }
-    
-    .article-card {
-        height: auto;
+    .featured-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .newsletter-form {
+        flex-direction: column !important;
     }
 }

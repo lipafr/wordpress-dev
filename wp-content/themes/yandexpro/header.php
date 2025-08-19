@@ -1,6 +1,7 @@
 <?php
 /**
  * The header for our theme
+ * ПОЛНАЯ РАБОЧАЯ ВЕРСИЯ
  *
  * @package YandexPro
  */
@@ -22,34 +23,22 @@
     <nav class="container">
         <div class="nav">
             <a href="<?php echo esc_url(home_url('/')); ?>" class="site-logo">
-                <?php bloginfo('name'); ?>
+                YandexPRO
             </a>
             
-            <?php
-            wp_nav_menu([
-                'theme_location' => 'primary',
-                'menu_class'     => 'nav-menu',
-                'container'      => false,
-                'fallback_cb'    => false,
-            ]);
-            ?>
+            <ul class="nav-menu">
+                <li><a href="#services">Услуги</a></li>
+                <li><a href="#cases">Кейсы</a></li>
+                <li><a href="#blog" class="active">Блог</a></li>
+                <li><a href="#about">Обо мне</a></li>
+                <li><a href="#contact">Контакты</a></li>
+            </ul>
             
             <button class="mobile-menu-toggle" aria-label="Открыть меню">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
-        </div>
-        
-        <div class="mobile-menu">
-            <?php
-            wp_nav_menu([
-                'theme_location' => 'primary',
-                'menu_class'     => 'mobile-menu-list',
-                'container'      => false,
-                'fallback_cb'    => false,
-            ]);
-            ?>
         </div>
     </nav>
 </header>
@@ -74,4 +63,4 @@
     </div>
 </section>
 
-<main id="main" class="site-main"><?php // Открываем main, закрываем в footer ?>
+<main id="main" class="site-main">
