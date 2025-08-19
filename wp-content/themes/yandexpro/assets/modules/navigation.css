@@ -1,0 +1,77 @@
+/**
+ * Navigation Module
+ * Стили для основной навигации
+ * 
+ * @package YandexPro
+ * @module Navigation
+ */
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 40px;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+}
+
+.nav-menu .menu-item {
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--yandexpro-black, #111827);
+    font-weight: 500;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    padding: 8px 0;
+    position: relative;
+    display: block;
+}
+
+.nav-link:hover,
+.nav-link.active,
+.current-menu-item .nav-link {
+    color: var(--yandexpro-primary, #7c3aed);
+}
+
+/* Подчеркивание для активной ссылки */
+.nav-link.active::after,
+.current-menu-item .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--yandexpro-primary, #7c3aed);
+    border-radius: 1px;
+}
+
+/* Hover эффект */
+.nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--yandexpro-primary, #7c3aed);
+    border-radius: 1px;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::before {
+    width: 100%;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+    .nav-menu {
+        display: none;
+    }
+}

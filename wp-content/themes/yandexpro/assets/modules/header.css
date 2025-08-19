@@ -1,0 +1,100 @@
+/**
+ * Header Module
+ * Базовые стили для header
+ * 
+ * @package YandexPro
+ * @module Header
+ */
+
+.site-header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 99999;
+    transition: var(--yandexpro-transition, all 0.3s ease);
+    box-shadow: var(--yandexpro-shadow-light, 0 2px 10px rgba(0,0,0,0.1));
+}
+
+/* WordPress админ-бар интеграция */
+.admin-bar .site-header {
+    top: 32px;
+}
+
+@media screen and (max-width: 782px) {
+    .admin-bar .site-header {
+        top: 46px;
+    }
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 0;
+    max-width: var(--yandexpro-container-width, 1200px);
+    margin: 0 auto;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+/* Site Branding */
+.site-branding {
+    flex-shrink: 0;
+}
+
+.site-logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--yandexpro-black, #111827);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    display: block;
+}
+
+.site-logo:hover {
+    color: var(--yandexpro-primary, #7c3aed);
+}
+
+.site-logo-image {
+    max-height: 40px;
+    width: auto;
+    display: block;
+}
+
+/* Эффекты при скролле */
+.site-header.scrolled {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+/* Отступы для контента */
+body {
+    padding-top: 80px;
+}
+
+.admin-bar body {
+    padding-top: 112px; /* 32px админ-бар + 80px header */
+}
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px;
+    }
+    
+    .admin-bar body {
+        padding-top: 116px; /* 46px админ-бар + 70px header */
+    }
+    
+    .nav {
+        padding: 15px 24px;
+    }
+    
+    .site-logo {
+        font-size: 20px;
+    }
+}

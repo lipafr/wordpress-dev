@@ -1,7 +1,7 @@
 <?php
 /**
  * YandexPro WordPress Theme Functions
- * ПОЛНАЯ РАБОЧАЯ ВЕРСИЯ
+ * ИСПРАВЛЕННАЯ ВЕРСИЯ БЕЗ ОШИБОК
  *
  * @package YandexPro
  * @since 1.0.0
@@ -34,7 +34,7 @@ function yandexpro_setup() {
     add_theme_support('post-thumbnails');
     
     // HTML5 разметка
-    add_theme_support('html5', [
+    add_theme_support('html5', array(
         'search-form',
         'comment-form',
         'comment-list',
@@ -42,7 +42,7 @@ function yandexpro_setup() {
         'caption',
         'style',
         'script'
-    ]);
+    ));
     
     // Размеры изображений
     add_image_size('yandexpro-featured', 400, 240, true);
@@ -50,10 +50,10 @@ function yandexpro_setup() {
     add_image_size('yandexpro-card', 300, 180, true);
     
     // Регистрация меню
-    register_nav_menus([
+    register_nav_menus(array(
         'primary' => __('Основное меню', 'yandexpro'),
         'footer'  => __('Меню в футере', 'yandexpro'),
-    ]);
+    ));
 }
 add_action('after_setup_theme', 'yandexpro_setup');
 
@@ -65,7 +65,7 @@ function yandexpro_enqueue_assets() {
     wp_enqueue_style(
         'yandexpro-fonts',
         'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap',
-        [],
+        array(),
         null
     );
     
@@ -73,24 +73,26 @@ function yandexpro_enqueue_assets() {
     wp_enqueue_style(
         'yandexpro-style',
         get_stylesheet_uri(),
-        ['yandexpro-fonts'],
+        array('yandexpro-fonts'),
         YANDEXPRO_VERSION
     );
     
     // Основной скрипт
-    wp_enqueue_script(
-        'yandexpro-script',
-        YANDEXPRO_URL . '/assets/js/script.js',
-        [],
-        YANDEXPRO_VERSION,
-        true
-    );
-    
-    // Локализация для AJAX
-    wp_localize_script('yandexpro-script', 'yandexpro_ajax', [
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'nonce' => wp_create_nonce('yandexpro_nonce')
-    ]);
+    if (file_exists(YANDEXPRO_DIR . '/assets/js/script.js')) {
+        wp_enqueue_script(
+            'yandexpro-script',
+            YANDEXPRO_URL . '/assets/js/script.js',
+            array(),
+            YANDEXPRO_VERSION,
+            true
+        );
+        
+        // Локализация для AJAX
+        wp_localize_script('yandexpro-script', 'yandexpro_ajax', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('yandexpro_nonce')
+        ));
+    }
 }
 add_action('wp_enqueue_scripts', 'yandexpro_enqueue_assets');
 
@@ -99,7 +101,7 @@ add_action('wp_enqueue_scripts', 'yandexpro_enqueue_assets');
  */
 function yandexpro_widgets_init() {
     // Сайдбар
-    register_sidebar([
+    register_sidebar(array(
         'name'          => __('Сайдбар', 'yandexpro'),
         'id'            => 'sidebar-1',
         'description'   => __('Основной сайдбар', 'yandexpro'),
@@ -107,18 +109,18 @@ function yandexpro_widgets_init() {
         'after_widget'  => '</section>',
         'before_title'  => '<h3 class="widget-title">',
         'after_title'   => '</h3>',
-    ]);
+    ));
     
     // Футер виджеты
     for ($i = 1; $i <= 3; $i++) {
-        register_sidebar([
+        register_sidebar(array(
             'name'          => sprintf(__('Футер %d', 'yandexpro'), $i),
             'id'            => 'footer-' . $i,
             'before_widget' => '<div class="footer-widget">',
             'after_widget'  => '</div>',
             'before_title'  => '<h3 class="footer-title">',
             'after_title'   => '</h3>',
-        ]);
+        ));
     }
 }
 add_action('widgets_init', 'yandexpro_widgets_init');
@@ -141,7 +143,7 @@ function yandexpro_newsletter_handler() {
     }
     
     // Сохраняем email (простая реализация)
-    $subscribers = get_option('yandexpro_subscribers', []);
+    $subscribers = get_option('yandexpro_subscribers', array());
     if (!in_array($email, $subscribers)) {
         $subscribers[] = $email;
         update_option('yandexpro_subscribers', $subscribers);
@@ -176,51 +178,6 @@ function yandexpro_newsletter_messages() {
 add_action('wp_footer', 'yandexpro_newsletter_messages');
 
 /**
- * ОТКЛЮЧЕНИЕ КЕША ДЛЯ РАЗРАБОТКИ
- */
-function yandexpro_disable_cache() {
-    // Отключаем WordPress кеш
-    wp_cache_flush();
-    
-    // Добавляем timestamp к файлам
-    add_filter('style_loader_src', function($src) {
-        return add_query_arg('ver', time(), remove_query_arg('ver', $src));
-    });
-    
-    add_filter('script_loader_src', function($src) {
-        return add_query_arg('ver', time(), remove_query_arg('ver', $src));
-    });
-}
-add_action('init', 'yandexpro_disable_cache');
-
-/**
- * Очистка всех кешей при активации темы
- */
-function yandexpro_flush_cache() {
-    wp_cache_flush();
-    flush_rewrite_rules();
-}
-add_action('after_switch_theme', 'yandexpro_flush_cache');
-
-/**
- * Максимальная ширина контента
- */
-if (!isset($content_width)) {
-    $content_width = 1200;
-}
-
-/**
- * Дебаг информация для разработки
- */
-function yandexpro_debug_info() {
-    if (current_user_can('administrator')) {
-        echo '<script>console.log("YandexPro Theme: Loaded successfully!");</script>';
-        echo '<script>console.log("Template: ' . basename(get_page_template()) . '");</script>';
-    }
-}
-add_action('wp_footer', 'yandexpro_debug_info');
-
-/**
  * Добавляем favicon
  */
 function yandexpro_favicon() {
@@ -238,3 +195,18 @@ remove_action('wp_head', 'wp_generator');
  */
 remove_action('wp_head', 'print_emoji_detection_script', 7);
 remove_action('wp_print_styles', 'print_emoji_styles');
+
+/**
+ * ДИАГНОСТИКА - БЕЗОПАСНАЯ ВЕРСИЯ
+ */
+function yandexpro_debug_info() {
+    if (current_user_can('administrator')) {
+        echo '<div style="position:fixed;top:100px;right:20px;background:red;color:white;padding:10px;z-index:9999;font-size:12px;">';
+        echo 'TEMPLATE: ' . basename(get_page_template()) . '<br>';
+        echo 'INDEX: ' . (file_exists(get_template_directory() . '/index.php') ? 'OK' : 'MISSING') . '<br>';
+        echo 'STYLE: ' . (file_exists(get_template_directory() . '/style.css') ? 'OK' : 'MISSING') . '<br>';
+        echo 'FUNCTIONS: ' . (function_exists('yandexpro_enqueue_assets') ? 'LOADED' : 'NOT LOADED');
+        echo '</div>';
+    }
+}
+add_action('wp_footer', 'yandexpro_debug_info');

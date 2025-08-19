@@ -265,3 +265,152 @@ body {
         flex-direction: column !important;
     }
 }
+
+/* PAGINATION STYLES - добавить в конец style.css */
+
+.pagination {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 20px 0 !important;
+    border-top: 1px solid #e2e8f0 !important;
+    margin-top: 40px !important;
+}
+
+.pagination-left {
+    flex: 1 !important;
+}
+
+.show-more-dropdown {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    color: #64748b !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+    transition: color 0.3s ease !important;
+    background: white !important;
+    padding: 12px 20px !important;
+    border-radius: 8px !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.show-more-dropdown:hover {
+    color: #475569 !important;
+    border-color: #7c3aed !important;
+}
+
+.pagination-center {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+}
+
+.pagination-btn {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    background: white !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #64748b !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    padding: 12px 16px !important;
+    border-radius: 8px !important;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    color: #7c3aed !important;
+    border-color: #7c3aed !important;
+    background: #f8fafc !important;
+}
+
+.pagination-btn:disabled {
+    color: #cbd5e1 !important;
+    cursor: not-allowed !important;
+    background: #f8fafc !important;
+}
+
+.current-page {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #111827 !important;
+    min-width: 24px !important;
+    text-align: center !important;
+}
+
+/* ОКОНЧАТЕЛЬНОЕ ИСПРАВЛЕНИЕ МОБИЛЬНОГО МЕНЮ - добавить в КОНЕЦ style.css */
+
+@media (max-width: 768px) {
+    /* Принудительно фиксируем позиционирование */
+    * {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    html, body {
+        width: 100% !important;
+        overflow-x: hidden !important;
+        margin: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Фиксируем header */
+    .site-header {
+        width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+    
+    .nav {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 15px 24px !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Фиксируем мобильное меню */
+    .mobile-menu {
+        width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        transform: translateX(0) translateY(-100%) !important;
+    }
+    
+    .mobile-menu.active {
+        transform: translateX(0) translateY(0) !important;
+    }
+    
+    .mobile-menu-list {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 20px 24px !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Убираем все возможные сдвиги */
+    .container {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 auto !important;
+        padding: 0 24px !important;
+        box-sizing: border-box !important;
+    }
+    
+    .hero-content {
+        width: 100% !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+}
