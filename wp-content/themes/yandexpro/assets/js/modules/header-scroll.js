@@ -1,32 +1,29 @@
 /**
- * Header Scroll Module
- * Эффекты header при скролле
+ * Mobile Menu Module
+ * Функциональность мобильного меню
  * 
  * @package YandexPro
- * @module HeaderScroll
+ * @module MobileMenu
  */
 
 (function() {
     'use strict';
 
-    const HeaderScroll = {
+    const MobileMenu = {
         // Настройки модуля
         settings: {
-            headerSelector: '.site-header',
-            scrollThreshold: 100,
-            scrolledClass: 'scrolled',
-            hideThreshold: 200,
-            hideClass: 'header-hidden'
+            toggleSelector: '[data-mobile-toggle]',
+            menuSelector: '[data-mobile-menu]',
+            linkSelector: '.mobile-nav-link',
+            activeClass: 'active',
+            bodyClass: 'mobile-menu-open'
         },
 
         // Элементы DOM
         elements: {},
 
         // Состояние
-        lastScrollY: 0,
-        isScrolled: false,
-        isHidden: false,
-        ticking: false,
+        isOpen: false,
 
         /**
          * Инициализация модуля
@@ -34,9 +31,9 @@
         init: function() {
             this.cacheElements();
             this.bindEvents();
-            this.updateHeader();
+            this.setupAccessibility();
             
-            console.log('Header Scroll module initialized');
+            console.log('Mobile Menu module initialized');
         },
 
         /**
@@ -44,8 +41,10 @@
          */
         cacheElements: function() {
             this.elements = {
-                header: document.querySelector(this.settings.headerSelector),
-                window: window
+                toggle: document.querySelector(this.settings.toggleSelector),
+                menu: document.querySelector(this.settings.menuSelector),
+                links: document.querySelectorAll(this.settings.linkSelector),
+                body: document.body
             };
         },
 
@@ -53,142 +52,150 @@
          * Привязка событий
          */
         bindEvents: function() {
-            if (!this.elements.header) return;
+            if (!this.elements.toggle || !this.elements.menu) return;
 
-            // Оптимизированный скролл с requestAnimationFrame
-            this.elements.window.addEventListener('scroll', () => {
-                if (!this.ticking) {
-                    requestAnimationFrame(this.updateHeader.bind(this));
-                    this.ticking = true;
-                }
-            }, { passive: true });
+            // Клик по кнопке меню
+            this.elements.toggle.addEventListener('click', this.handleToggleClick.bind(this));
 
-            // Обновление при изменении размера
-            this.elements.window.addEventListener('resize', 
-                this.debounce(this.handleResize.bind(this), 250));
+            // Клики по ссылкам меню
+            this.elements.links.forEach(link => {
+                link.addEventListener('click', this.handleLinkClick.bind(this));
+            });
+
+            // Закрытие по Escape
+            document.addEventListener('keydown', this.handleKeydown.bind(this));
+
+            // Закрытие при изменении размера экрана
+            window.addEventListener('resize', this.handleResize.bind(this));
+
+            // Закрытие при клике вне меню
+            document.addEventListener('click', this.handleOutsideClick.bind(this));
         },
 
         /**
-         * Обновление состояния header
+         * Настройка доступности
          */
-        updateHeader: function() {
-            const currentScrollY = this.elements.window.scrollY;
-            const scrollDirection = currentScrollY > this.lastScrollY ? 'down' : 'up';
-            
-            // Добавляем/убираем класс scrolled
-            this.handleScrolledState(currentScrollY);
-            
-            // Скрытие/показ header при скролле (опционально)
-            // this.handleHeaderVisibility(currentScrollY, scrollDirection);
-            
-            // Изменение стилей в зависимости от скролла
-            this.updateHeaderStyles(currentScrollY);
-            
-            this.lastScrollY = currentScrollY;
-            this.ticking = false;
+        setupAccessibility: function() {
+            if (!this.elements.toggle || !this.elements.menu) return;
+
+            // Устанавливаем ARIA атрибуты
+            this.elements.toggle.setAttribute('aria-expanded', 'false');
+            this.elements.toggle.setAttribute('aria-controls', this.elements.menu.id || 'mobile-menu');
+            this.elements.menu.setAttribute('aria-hidden', 'true');
         },
 
         /**
-         * Обработка состояния "прокручен"
+         * Обработка клика по кнопке меню
          */
-        handleScrolledState: function(scrollY) {
-            const shouldBeScrolled = scrollY > this.settings.scrollThreshold;
+        handleToggleClick: function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             
-            if (shouldBeScrolled && !this.isScrolled) {
-                this.elements.header.classList.add(this.settings.scrolledClass);
-                this.isScrolled = true;
-            } else if (!shouldBeScrolled && this.isScrolled) {
-                this.elements.header.classList.remove(this.settings.scrolledClass);
-                this.isScrolled = false;
+            if (this.isOpen) {
+                this.closeMenu();
+            } else {
+                this.openMenu();
             }
         },
 
         /**
-         * Обработка видимости header (скрытие при скролле вниз)
+         * Обработка клика по ссылке меню
          */
-        handleHeaderVisibility: function(scrollY, direction) {
-            const shouldHide = scrollY > this.settings.hideThreshold && direction === 'down';
-            const shouldShow = direction === 'up' || scrollY <= this.settings.hideThreshold;
+        handleLinkClick: function(e) {
+            // Закрываем меню при клике на ссылку
+            this.closeMenu();
             
-            if (shouldHide && !this.isHidden) {
-                this.hideHeader();
-            } else if (shouldShow && this.isHidden) {
-                this.showHeader();
+            // Если это якорная ссылка, добавляем плавную прокрутку
+            const href = e.currentTarget.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                e.preventDefault();
+                this.smoothScrollTo(href);
             }
         },
 
         /**
-         * Скрытие header
+         * Обработка нажатия клавиш
          */
-        hideHeader: function() {
-            this.elements.header.classList.add(this.settings.hideClass);
-            this.isHidden = true;
+        handleKeydown: function(e) {
+            if (e.key === 'Escape' && this.isOpen) {
+                this.closeMenu();
+                this.elements.toggle.focus();
+            }
         },
 
         /**
-         * Показ header
-         */
-        showHeader: function() {
-            this.elements.header.classList.remove(this.settings.hideClass);
-            this.isHidden = false;
-        },
-
-        /**
-         * Обновление стилей header
-         */
-        updateHeaderStyles: function(scrollY) {
-            const opacity = Math.min(0.95 + (scrollY / 1000) * 0.05, 0.98);
-            const blur = Math.min(12 + (scrollY / 100), 16);
-            
-            this.elements.header.style.setProperty('--header-opacity', opacity);
-            this.elements.header.style.setProperty('--header-blur', `${blur}px`);
-        },
-
-        /**
-         * Обработка изменения размера окна
+         * Обработка изменения размера экрана
          */
         handleResize: function() {
-            // Пересчитываем позиции при изменении размера
-            this.updateHeader();
-        },
-
-        /**
-         * Debounce функция
-         */
-        debounce: function(func, wait, immediate) {
-            let timeout;
-            return function executedFunction() {
-                const context = this;
-                const args = arguments;
-                
-                const later = function() {
-                    timeout = null;
-                    if (!immediate) func.apply(context, args);
-                };
-                
-                const callNow = immediate && !timeout;
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-                
-                if (callNow) func.apply(context, args);
-            };
-        },
-
-        /**
-         * Плавная прокрутка к элементу
-         */
-        scrollToElement: function(element, offset = 0) {
-            if (typeof element === 'string') {
-                element = document.querySelector(element);
+            // Закрываем меню при переходе на десктоп
+            if (window.innerWidth > 768 && this.isOpen) {
+                this.closeMenu();
             }
+        },
+
+        /**
+         * Обработка клика вне меню
+         */
+        handleOutsideClick: function(e) {
+            if (!this.isOpen) return;
             
+            if (!this.elements.toggle.contains(e.target) && 
+                !this.elements.menu.contains(e.target)) {
+                this.closeMenu();
+            }
+        },
+
+        /**
+         * Открытие меню
+         */
+        openMenu: function() {
+            this.isOpen = true;
+            
+            // Добавляем классы
+            this.elements.toggle.classList.add(this.settings.activeClass);
+            this.elements.menu.classList.add(this.settings.activeClass);
+            this.elements.body.classList.add(this.settings.bodyClass);
+            
+            // Обновляем ARIA атрибуты
+            this.elements.toggle.setAttribute('aria-expanded', 'true');
+            this.elements.menu.setAttribute('aria-hidden', 'false');
+            
+            console.log('Mobile menu opened');
+        },
+
+        /**
+         * Закрытие меню
+         */
+        closeMenu: function() {
+            this.isOpen = false;
+            
+            // Убираем классы
+            this.elements.toggle.classList.remove(this.settings.activeClass);
+            this.elements.menu.classList.remove(this.settings.activeClass);
+            this.elements.body.classList.remove(this.settings.bodyClass);
+            
+            // Обновляем ARIA атрибуты
+            this.elements.toggle.setAttribute('aria-expanded', 'false');
+            this.elements.menu.setAttribute('aria-hidden', 'true');
+            
+            console.log('Mobile menu closed');
+        },
+
+        /**
+         * Плавная прокрутка к якорю
+         */
+        smoothScrollTo: function(target) {
+            const element = document.querySelector(target);
             if (!element) return;
             
-            const headerHeight = this.elements.header.offsetHeight;
+            const header = document.querySelector('.site-header');
             const adminBar = document.querySelector('#wpadminbar');
-            const adminBarHeight = adminBar ? adminBar.offsetHeight : 0;
             
-            const targetPosition = element.offsetTop - headerHeight - adminBarHeight - offset;
+            let offset = 20;
+            if (header) offset += header.offsetHeight;
+            if (adminBar) offset += adminBar.offsetHeight;
+            
+            const targetPosition = element.offsetTop - offset;
             
             window.scrollTo({
                 top: targetPosition,
@@ -197,30 +204,34 @@
         },
 
         /**
-         * Публичный API
+         * Публичный API для внешнего управления
          */
-        scrollTo: function(target, offset) {
-            this.scrollToElement(target, offset);
+        open: function() {
+            this.openMenu();
         },
 
-        getScrollPosition: function() {
-            return this.elements.window.scrollY;
+        close: function() {
+            this.closeMenu();
         },
 
-        isHeaderScrolled: function() {
-            return this.isScrolled;
+        toggle: function() {
+            if (this.isOpen) {
+                this.closeMenu();
+            } else {
+                this.openMenu();
+            }
         }
     };
 
     // Автоинициализация при загрузке DOM
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', HeaderScroll.init.bind(HeaderScroll));
+        document.addEventListener('DOMContentLoaded', MobileMenu.init.bind(MobileMenu));
     } else {
-        HeaderScroll.init();
+        MobileMenu.init();
     }
 
     // Экспорт в глобальную область
     window.YandexPro = window.YandexPro || {};
-    window.YandexPro.HeaderScroll = HeaderScroll;
+    window.YandexPro.MobileMenu = MobileMenu;
 
 })();

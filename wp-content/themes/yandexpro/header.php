@@ -1,237 +1,84 @@
-/**
- * Mobile Menu Module
- * Функциональность мобильного меню
- * 
- * @package YandexPro
- * @module MobileMenu
- */
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+    <meta charset="<?php bloginfo('charset'); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="profile" href="https://gmpg.org/xfn/11">
+    <?php wp_head(); ?>
+</head>
 
-(function() {
-    'use strict';
+<body <?php body_class(); ?>>
+<?php wp_body_open(); ?>
 
-    const MobileMenu = {
-        // Настройки модуля
-        settings: {
-            toggleSelector: '[data-mobile-toggle]',
-            menuSelector: '[data-mobile-menu]',
-            linkSelector: '.mobile-nav-link',
-            activeClass: 'active',
-            bodyClass: 'mobile-menu-open'
-        },
-
-        // Элементы DOM
-        elements: {},
-
-        // Состояние
-        isOpen: false,
-
-        /**
-         * Инициализация модуля
-         */
-        init: function() {
-            this.cacheElements();
-            this.bindEvents();
-            this.setupAccessibility();
-            
-            console.log('Mobile Menu module initialized');
-        },
-
-        /**
-         * Кеширование элементов DOM
-         */
-        cacheElements: function() {
-            this.elements = {
-                toggle: document.querySelector(this.settings.toggleSelector),
-                menu: document.querySelector(this.settings.menuSelector),
-                links: document.querySelectorAll(this.settings.linkSelector),
-                body: document.body
-            };
-        },
-
-        /**
-         * Привязка событий
-         */
-        bindEvents: function() {
-            if (!this.elements.toggle || !this.elements.menu) return;
-
-            // Клик по кнопке меню
-            this.elements.toggle.addEventListener('click', this.handleToggleClick.bind(this));
-
-            // Клики по ссылкам меню
-            this.elements.links.forEach(link => {
-                link.addEventListener('click', this.handleLinkClick.bind(this));
-            });
-
-            // Закрытие по Escape
-            document.addEventListener('keydown', this.handleKeydown.bind(this));
-
-            // Закрытие при изменении размера экрана
-            window.addEventListener('resize', this.handleResize.bind(this));
-
-            // Закрытие при клике вне меню
-            document.addEventListener('click', this.handleOutsideClick.bind(this));
-        },
-
-        /**
-         * Настройка доступности
-         */
-        setupAccessibility: function() {
-            if (!this.elements.toggle || !this.elements.menu) return;
-
-            // Устанавливаем ARIA атрибуты
-            this.elements.toggle.setAttribute('aria-expanded', 'false');
-            this.elements.toggle.setAttribute('aria-controls', this.elements.menu.id || 'mobile-menu');
-            this.elements.menu.setAttribute('aria-hidden', 'true');
-        },
-
-        /**
-         * Обработка клика по кнопке меню
-         */
-        handleToggleClick: function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            if (this.isOpen) {
-                this.closeMenu();
+<!-- Header -->
+<header class="site-header">
+    <div class="container">
+        <nav class="nav" role="navigation" aria-label="<?php esc_attr_e('Основная навигация', 'yandexpro'); ?>">
+            <?php 
+            // Компонент брендинга/логотипа
+            if (file_exists(get_template_directory() . '/template-parts/header/site-branding.php')) {
+                get_template_part('template-parts/header/site-branding'); 
             } else {
-                this.openMenu();
+                echo '<div class="site-branding"><a href="' . esc_url(home_url('/')) . '" class="site-logo">YandexPRO</a></div>';
             }
-        },
-
-        /**
-         * Обработка клика по ссылке меню
-         */
-        handleLinkClick: function(e) {
-            // Закрываем меню при клике на ссылку
-            this.closeMenu();
             
-            // Если это якорная ссылка, добавляем плавную прокрутку
-            const href = e.currentTarget.getAttribute('href');
-            if (href && href.startsWith('#')) {
-                e.preventDefault();
-                this.smoothScrollTo(href);
-            }
-        },
-
-        /**
-         * Обработка нажатия клавиш
-         */
-        handleKeydown: function(e) {
-            if (e.key === 'Escape' && this.isOpen) {
-                this.closeMenu();
-                this.elements.toggle.focus();
-            }
-        },
-
-        /**
-         * Обработка изменения размера экрана
-         */
-        handleResize: function() {
-            // Закрываем меню при переходе на десктоп
-            if (window.innerWidth > 768 && this.isOpen) {
-                this.closeMenu();
-            }
-        },
-
-        /**
-         * Обработка клика вне меню
-         */
-        handleOutsideClick: function(e) {
-            if (!this.isOpen) return;
-            
-            if (!this.elements.toggle.contains(e.target) && 
-                !this.elements.menu.contains(e.target)) {
-                this.closeMenu();
-            }
-        },
-
-        /**
-         * Открытие меню
-         */
-        openMenu: function() {
-            this.isOpen = true;
-            
-            // Добавляем классы
-            this.elements.toggle.classList.add(this.settings.activeClass);
-            this.elements.menu.classList.add(this.settings.activeClass);
-            this.elements.body.classList.add(this.settings.bodyClass);
-            
-            // Обновляем ARIA атрибуты
-            this.elements.toggle.setAttribute('aria-expanded', 'true');
-            this.elements.menu.setAttribute('aria-hidden', 'false');
-            
-            console.log('Mobile menu opened');
-        },
-
-        /**
-         * Закрытие меню
-         */
-        closeMenu: function() {
-            this.isOpen = false;
-            
-            // Убираем классы
-            this.elements.toggle.classList.remove(this.settings.activeClass);
-            this.elements.menu.classList.remove(this.settings.activeClass);
-            this.elements.body.classList.remove(this.settings.bodyClass);
-            
-            // Обновляем ARIA атрибуты
-            this.elements.toggle.setAttribute('aria-expanded', 'false');
-            this.elements.menu.setAttribute('aria-hidden', 'true');
-            
-            console.log('Mobile menu closed');
-        },
-
-        /**
-         * Плавная прокрутка к якорю
-         */
-        smoothScrollTo: function(target) {
-            const element = document.querySelector(target);
-            if (!element) return;
-            
-            const header = document.querySelector('.site-header');
-            const adminBar = document.querySelector('#wpadminbar');
-            
-            let offset = 20;
-            if (header) offset += header.offsetHeight;
-            if (adminBar) offset += adminBar.offsetHeight;
-            
-            const targetPosition = element.offsetTop - offset;
-            
-            window.scrollTo({
-                top: targetPosition,
-                behavior: 'smooth'
-            });
-        },
-
-        /**
-         * Публичный API для внешнего управления
-         */
-        open: function() {
-            this.openMenu();
-        },
-
-        close: function() {
-            this.closeMenu();
-        },
-
-        toggle: function() {
-            if (this.isOpen) {
-                this.closeMenu();
+            // Компонент основной навигации
+            if (file_exists(get_template_directory() . '/template-parts/header/navigation.php')) {
+                get_template_part('template-parts/header/navigation'); 
             } else {
-                this.openMenu();
+                echo '<ul class="nav-menu">
+                    <li><a href="#services" class="nav-link">Услуги</a></li>
+                    <li><a href="#cases" class="nav-link">Кейсы</a></li>
+                    <li><a href="#blog" class="nav-link active">Блог</a></li>
+                    <li><a href="#about" class="nav-link">Обо мне</a></li>
+                    <li><a href="#contact" class="nav-link">Контакты</a></li>
+                </ul>';
             }
-        }
-    };
+            
+            // Компонент мобильного меню
+            if (file_exists(get_template_directory() . '/template-parts/header/mobile-menu.php')) {
+                get_template_part('template-parts/header/mobile-menu'); 
+            } else {
+                echo '<button class="mobile-menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="mobile-menu">
+                    <ul class="mobile-menu-list">
+                        <li><a href="#services">Услуги</a></li>
+                        <li><a href="#cases">Кейсы</a></li>
+                        <li><a href="#blog">Блог</a></li>
+                        <li><a href="#about">Обо мне</a></li>
+                        <li><a href="#contact">Контакты</a></li>
+                    </ul>
+                </div>';
+            }
+            ?>
+        </nav>
+    </div>
+</header>
 
-    // Автоинициализация при загрузке DOM
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', MobileMenu.init.bind(MobileMenu));
+<?php 
+// Hero секция (только на главной странице)
+if (is_home() || is_front_page()) {
+    if (file_exists(get_template_directory() . '/template-parts/header/hero.php')) {
+        get_template_part('template-parts/header/hero');
     } else {
-        MobileMenu.init();
+        echo '<section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Блог о <span class="gradient-text">Яндекс Директ</span><br>и интернет-маркетинге</h1>
+                    <p>Практические кейсы, инсайты и тренды из мира контекстной рекламы.</p>
+                    <div class="search-container">
+                        <div class="search-icon">🔍</div>
+                        <input type="text" class="search-box" placeholder="Поиск по статьям...">
+                    </div>
+                </div>
+            </div>
+        </section>';
     }
+}
+?>
 
-    // Экспорт в глобальную область
-    window.YandexPro = window.YandexPro || {};
-    window.YandexPro.MobileMenu = MobileMenu;
-
-})();
+<main id="main" class="site-main" role="main">

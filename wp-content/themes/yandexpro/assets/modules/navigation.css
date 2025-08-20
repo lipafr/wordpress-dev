@@ -1,6 +1,6 @@
 /**
  * Navigation Module
- * Стили для основной навигации
+ * Стили для основной навигации - ТОЧНО ПО МАКЕТУ
  * 
  * @package YandexPro
  * @module Navigation
@@ -21,52 +21,38 @@
     position: relative;
 }
 
+/* ОБЫЧНЫЕ ССЫЛКИ (как в макете) */
 .nav-link {
     text-decoration: none;
     color: var(--yandexpro-black, #111827);
     font-weight: 500;
     font-size: 16px;
-    transition: all 0.3s ease;
-    padding: 8px 0;
+    transition: color 0.3s ease;
+    padding: 8px 12px;
     position: relative;
     display: block;
 }
 
-.nav-link:hover,
-.nav-link.active,
-.current-menu-item .nav-link {
+.nav-link:hover {
     color: var(--yandexpro-primary, #7c3aed);
 }
 
-/* Подчеркивание для активной ссылки */
-.nav-link.active::after,
-.current-menu-item .nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 2px;
+/* АКТИВНАЯ ССЫЛКА - ФИОЛЕТОВАЯ ТАБЛЕТКА (точно как в макете) */
+.nav-link.active,
+.current-menu-item .nav-link {
     background: var(--yandexpro-primary, #7c3aed);
-    border-radius: 1px;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-weight: 500;
 }
 
-/* Hover эффект */
-.nav-link::before {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background: var(--yandexpro-primary, #7c3aed);
-    border-radius: 1px;
-    transition: all 0.3s ease;
-    transform: translateX(-50%);
-}
-
-.nav-link:hover::before {
-    width: 100%;
+.nav-link.active:hover,
+.current-menu-item .nav-link:hover {
+    background: #6d28d9;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
 }
 
 /* Мобильная адаптация */

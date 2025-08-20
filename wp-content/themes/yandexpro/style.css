@@ -3,14 +3,28 @@ Theme Name: YandexPro
 Version: 1.0.0
 */
 
+/* CSS ПЕРЕМЕННЫЕ (ОБЯЗАТЕЛЬНО!) */
+:root {
+    --yandexpro-primary: #7c3aed;
+    --yandexpro-accent: #ec4899;
+    --yandexpro-white: #ffffff;
+    --yandexpro-black: #111827;
+    --yandexpro-light: #f8fafc;
+    --yandexpro-secondary: #64748b;
+    --yandexpro-font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    --yandexpro-container-width: 1200px;
+    --yandexpro-transition: all 0.3s ease;
+    --yandexpro-shadow-light: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
 /* ПРИНУДИТЕЛЬНЫЕ СТИЛИ */
 * { margin: 0 !important; padding: 0 !important; box-sizing: border-box !important; }
 
 body {
-    font-family: 'Space Grotesk', Arial, sans-serif !important;
+    font-family: var(--yandexpro-font-family) !important;
     line-height: 1.6 !important;
-    color: #111827 !important;
-    background: #ffffff !important;
+    color: var(--yandexpro-black) !important;
+    background: var(--yandexpro-white) !important;
 }
 
 .container {
